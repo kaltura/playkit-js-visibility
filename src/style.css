@@ -1,0 +1,22 @@
+#playkit-floating-poster {
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#playkit-floating-container{
+  height: 100%;
+  width: 100%;
+}
+#playkit-floating-container.playkit-floating-active {
+  position: fixed;
+  bottom: 1vh;
+  right: 1vw;
+  height: 225px;
+  width: 400px;
+}

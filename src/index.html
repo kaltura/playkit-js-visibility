@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="./playkit-visibility.js"></script>
+</head>
+<body>
+<div id="player-placeholder" style="width: 360px; height: 640px;"></div>
+<script>
+  var playerContainer = document.querySelector("#player-placeholder");
+  var config = {
+    logLevel: "DEBUG",
+    sources: {
+      progressive: [
+        {
+          mimetype: "video/mp4",
+          url: "https://cfvod.kaltura.com/pd/p/1740481/sp/174048100/serveFlavor/entryId/1_kbyh1guy/v/1/flavorId/1_hq6oztva/name/a.mp4"
+        }
+      ]
+    },
+    plugins: {
+      "visibility": {}
+    }
+  };
+  var player = playkit.core.loadPlayer(config);
+  playerContainer.appendChild(window.player.getView());
+  player.play();
+</script>
+</body>
+</html>
