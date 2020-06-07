@@ -2,26 +2,56 @@
 import {BasePlugin, Utils} from 'playkit-js';
 import {VisibilityType} from './visibility-type';
 import './style.css';
+import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 /**
  * The video tag class.
  * @type {string}
  * @const
  */
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
-const FLOATING_CONTAINER_ID: string = 'playkit-floating-container';
-const FLOATING_POSTER_ID: string = 'playkit-floating-poster';
+const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
+const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 
 /**
  * Visibility class.
  * @classdesc
  */
 class Visibility extends BasePlugin {
+  appTargetContainer: HTMLElement;
+  floatingContainer: HTMLElement;
+  floatingPoster: HTMLElement;
+  observer: IntersectionObserver;
+
   /**
    * The default configuration of the plugin.
    * @type {Object}
    * @static
    */
-  static defaultConfig: Object = {};
+  static defaultConfig: Object = {
+    floating: {
+      position: 'bottom-right',
+      size: {
+        height: '225px',
+        width: '400px'
+      }
+    }
+  };
+
+  getUIComponents() {
+    return [
+      {
+        label: 'dismissibleFloatingButtonComponent',
+        presets: ['Playback', 'Live'],
+        container: 'TopBarRightControls',
+        get: DismissibleFloatingButtonComponent,
+        props: {
+          onClose: () => {
+            this._dismissed();
+          }
+        }
+      }
+    ];
+  }
 
   /**
    * @static
@@ -31,11 +61,6 @@ class Visibility extends BasePlugin {
   static isValid(): boolean {
     return true;
   }
-
-  appTargetContainer: HTMLElement;
-  floatingContainer: HTMLElement;
-  floatingPoster: HTMLElement;
-  observer: IntersectionObserver;
 
   /**
    * @constructor
@@ -47,15 +72,30 @@ class Visibility extends BasePlugin {
     super(name, player, config);
     this.appTargetContainer = document.getElementById(player.config.targetId);
     this.reset();
-    this._initFloating();
+    if (this.config.type === VisibilityType.FLOATING) {
+      this._initFloating();
+    }
   }
 
   _initFloating() {
-    this.appTargetContainer.innerHTML = `<div id=${FLOATING_POSTER_ID}></div><div id=${FLOATING_CONTAINER_ID}>${
-      this.appTargetContainer.innerHTML
-    }</div>`;
-    this.floatingContainer = document.getElementById(FLOATING_CONTAINER_ID);
-    this.floatingPoster = document.getElementById(FLOATING_POSTER_ID);
+    this.floatingPoster = document.createElement('div');
+    this.floatingPoster.className = FLOATING_POSTER_CLASS;
+    this.floatingContainer = document.createElement('div');
+    this.floatingContainer.className = FLOATING_CONTAINER_CLASS;
+    this.floatingContainer.innerHTML = this.appTargetContainer.innerHTML;
+    this.appTargetContainer.innerHTML = '';
+    this.appTargetContainer.appendChild(this.floatingPoster);
+    this.appTargetContainer.appendChild(this.floatingContainer);
+
+    this.config.floating.position.split('-').forEach(side => {
+      Utils.Dom.addClassName(this.floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
+    });
+  }
+
+  _dismissed() {
+    this.player.pause();
+    this._stopFloating();
+    this.observer.disconnect();
   }
 
   _startFloatingObserver() {
@@ -68,12 +108,23 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this.floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
   }
 
+  _stopFloating() {
+    Utils.Dom.removeClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.removeAttribute(this.floatingContainer, 'style');
+  }
+
+  _startFloating() {
+    Utils.Dom.addClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.setStyle(this.floatingContainer, 'height', this.config.floating.size.height);
+    Utils.Dom.setStyle(this.floatingContainer, 'width', this.config.floating.size.width);
+  }
+
   _handleFloatingVisibilityChange(entries) {
     for (let entry: IntersectionObserverEntry of entries) {
       if (entry.intersectionRatio < 0.5) {
-        Utils.Dom.addClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
+        this._startFloating();
       } else {
-        Utils.Dom.removeClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
+        this._stopFloating();
       }
       window.console.log(entry.isIntersecting, entry.intersectionRatio);
     }

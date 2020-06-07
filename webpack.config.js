@@ -14,7 +14,7 @@ const plugins = [
 ];
 
 if (PROD) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
+  // plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
 } else {
   plugins.push(
     new CopyWebpackPlugin([
@@ -98,6 +98,13 @@ module.exports = {
       commonjs2: 'playkit-js',
       amd: 'playkit-js',
       root: ['KalturaPlayer', 'core']
+    },
+    'playkit-js-ui': {
+      commonjs: 'playkit-js-ui',
+      commonjs2: 'playkit-js-ui',
+      amd: 'playkit-js-ui',
+      root: ['KalturaPlayer', 'ui']
     }
+
   }
 };

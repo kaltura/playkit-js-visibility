@@ -1,4 +1,4 @@
-#playkit-floating-poster {
+.playkit-floating-poster {
   height: 100%;
   width: 100%;
   background-color: black;
@@ -6,17 +6,35 @@
   background-size: contain;
   background-position: center;
   position: absolute;
+}
+
+.playkit-floating-active-top {
   top: 0;
+}
+.playkit-floating-active-bottom {
+  bottom: 0;
+}
+.playkit-floating-active-left {
   left: 0;
 }
-#playkit-floating-container{
+.playkit-floating-active-right {
+  right: 0;
+}
+
+.playkit-floating-container {
   height: 100%;
   width: 100%;
 }
-#playkit-floating-container.playkit-floating-active {
+.playkit-floating-container.playkit-floating-active {
   position: fixed;
-  bottom: 1vh;
-  right: 1vw;
-  height: 225px;
-  width: 400px;
+}
+
+.playkit-floating-dismissible {
+  display: none;
+  height: 24px;
+  width: 24px;
+}
+
+.playkit-floating-container.playkit-floating-active .playkit-floating-dismissible {
+  display: inline-block;
 }

@@ -30,6 +30,8 @@
     "access": "public"
   },
   "devDependencies": {
+    "@playkit-js/playkit-js": "0.61.2",
+    "@playkit-js/playkit-js-ui": "0.55.0",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-eslint": "^7.1.1",
@@ -38,6 +40,7 @@
     "babel-plugin-transform-class-properties": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.23.0",
     "chai": "^3.5.0",
@@ -51,6 +54,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-mocha-no-only": "^0.0.5",
     "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.20.0",
     "flow-bin": "latest",
     "husky": "0.14.3",
     "istanbul": "^0.4.5",
@@ -69,7 +73,6 @@
     "lint-staged": "7.0.5",
     "mocha": "^3.2.0",
     "mocha-cli": "^1.0.1",
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#master",
     "prettier": "^1.13.5",
     "sinon": "^2.0.0",
     "sinon-chai": "^2.8.0",
@@ -80,7 +83,8 @@
     "webpack-dev-server": "latest"
   },
   "peerDependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#master"
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#master",
+    "playkit-js-ui": "https://github.com/kaltura/playkit-js-ui.git#master"
   },
   "keywords": [
     "visibility",
