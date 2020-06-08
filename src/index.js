@@ -1,5 +1,4 @@
 // @flow
-import 'intersection-observer';
 import {registerPlugin} from 'playkit-js';
 import {Visibility} from './visibility';
 

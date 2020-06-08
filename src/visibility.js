@@ -2,6 +2,7 @@
 import {BasePlugin, Utils} from 'playkit-js';
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
+import 'intersection-observer';
 
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
@@ -32,7 +33,7 @@ class Visibility extends BasePlugin {
     return [
       {
         label: 'dismissibleFloatingButtonComponent',
-        presets: ['Playback', 'Live'],
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: 'TopBarRightControls',
         get: DismissibleFloatingButtonComponent,
         props: {
@@ -80,23 +81,24 @@ class Visibility extends BasePlugin {
         size: {
           height: '225px',
           width: '400px'
+        },
+        margin: {
+          x: '2px',
+          y: '2px'
         }
       }
     };
     Utils.Object.mergeDeep(this.config, defaultFloatingConfig, Utils.Object.copyDeep(this.config));
-    this.floatingPoster = document.createElement('div');
+    this.floatingPoster = Utils.Dom.createElement('div');
     this.floatingPoster.className = FLOATING_POSTER_CLASS;
-    this.floatingContainer = document.createElement('div');
+    this.floatingContainer = Utils.Dom.createElement('div');
     this.floatingContainer.className = FLOATING_CONTAINER_CLASS;
 
-    // local const is defined to override flow null reference error
-    const appTargetContainer = (this.appTargetContainer = document.getElementById(this.player.config.targetId));
-    if (appTargetContainer) {
-      this.floatingContainer.innerHTML = appTargetContainer.innerHTML;
-      appTargetContainer.innerHTML = '';
-      appTargetContainer.appendChild(this.floatingPoster);
-      appTargetContainer.appendChild(this.floatingContainer);
-    }
+    this.appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
+    this.floatingContainer.innerHTML = this.appTargetContainer.innerHTML;
+    this.appTargetContainer.innerHTML = '';
+    Utils.Dom.appendChild(this.appTargetContainer, this.floatingPoster);
+    Utils.Dom.appendChild(this.appTargetContainer, this.floatingContainer);
     this.config.floating.position.split('-').forEach(side => {
       Utils.Dom.addClassName(this.floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
     });
@@ -117,6 +119,7 @@ class Visibility extends BasePlugin {
     Utils.Dom.addClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.setStyle(this.floatingContainer, 'height', this.config.floating.size.height);
     Utils.Dom.setStyle(this.floatingContainer, 'width', this.config.floating.size.width);
+    Utils.Dom.setStyle(this.floatingContainer, 'margin', `${this.config.floating.margin.y} ${this.config.floating.margin.x}`);
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
@@ -152,7 +155,7 @@ class Visibility extends BasePlugin {
    * @returns {void}
    */
   destroy(): void {
-    this._clean();
+    this.observer.disconnect();
   }
 
   /**
