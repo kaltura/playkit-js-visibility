@@ -9,7 +9,7 @@ const Icon = Components.Icon;
 const IconType = Components.IconType;
 
 class DismissibleFloatingButtonComponent extends Component {
-  render(props) {
+  render(props: any) {
     return (
       <Localizer>
         <a

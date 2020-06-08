@@ -1,13 +1,8 @@
 // @flow
 import {BasePlugin, Utils} from 'playkit-js';
-import {VisibilityType} from './visibility-type';
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
-/**
- * The video tag class.
- * @type {string}
- * @const
- */
+
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
@@ -17,10 +12,12 @@ const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
  * @classdesc
  */
 class Visibility extends BasePlugin {
-  appTargetContainer: HTMLElement;
+  appTargetContainer: HTMLElement | null;
   floatingContainer: HTMLElement;
   floatingPoster: HTMLElement;
-  observer: IntersectionObserver;
+  observer: window.IntersectionObserver;
+  everStartedPlaying: boolean = false;
+  dismissed: boolean = false;
 
   /**
    * The default configuration of the plugin.
@@ -28,13 +25,7 @@ class Visibility extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    floating: {
-      position: 'bottom-right',
-      size: {
-        height: '225px',
-        width: '400px'
-      }
-    }
+    threshold: 0.5
   };
 
   getUIComponents() {
@@ -70,42 +61,51 @@ class Visibility extends BasePlugin {
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
-    this.appTargetContainer = document.getElementById(player.config.targetId);
     this.reset();
-    if (this.config.type === VisibilityType.FLOATING) {
+    if (this.config.floating) {
       this._initFloating();
     }
+    const options = {
+      threshold: this.config.threshold
+    };
+
+    this.observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
+    this.observer.observe(this.appTargetContainer);
   }
 
   _initFloating() {
+    const defaultFloatingConfig = {
+      floating: {
+        position: 'bottom-right',
+        size: {
+          height: '225px',
+          width: '400px'
+        }
+      }
+    };
+    Utils.Object.mergeDeep(this.config, defaultFloatingConfig, Utils.Object.copyDeep(this.config));
     this.floatingPoster = document.createElement('div');
     this.floatingPoster.className = FLOATING_POSTER_CLASS;
     this.floatingContainer = document.createElement('div');
     this.floatingContainer.className = FLOATING_CONTAINER_CLASS;
-    this.floatingContainer.innerHTML = this.appTargetContainer.innerHTML;
-    this.appTargetContainer.innerHTML = '';
-    this.appTargetContainer.appendChild(this.floatingPoster);
-    this.appTargetContainer.appendChild(this.floatingContainer);
 
+    // local const is defined to override flow null reference error
+    const appTargetContainer = (this.appTargetContainer = document.getElementById(this.player.config.targetId));
+    if (appTargetContainer) {
+      this.floatingContainer.innerHTML = appTargetContainer.innerHTML;
+      appTargetContainer.innerHTML = '';
+      appTargetContainer.appendChild(this.floatingPoster);
+      appTargetContainer.appendChild(this.floatingContainer);
+    }
     this.config.floating.position.split('-').forEach(side => {
       Utils.Dom.addClassName(this.floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
     });
   }
 
   _dismissed() {
+    this.dismissed = true;
     this.player.pause();
     this._stopFloating();
-    this.observer.disconnect();
-  }
-
-  _startFloatingObserver() {
-    let options = {
-      threshold: 0.5
-    };
-
-    this.observer = new IntersectionObserver(this._handleFloatingVisibilityChange.bind(this), options);
-    this.observer.observe(this.appTargetContainer);
-    Utils.Dom.setStyle(this.floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
   }
 
   _stopFloating() {
@@ -119,17 +119,20 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this.floatingContainer, 'width', this.config.floating.size.width);
   }
 
-  _handleFloatingVisibilityChange(entries) {
-    for (let entry: IntersectionObserverEntry of entries) {
-      if (entry.intersectionRatio < 0.5) {
-        this._startFloating();
-      } else {
-        this._stopFloating();
-      }
-      window.console.log(entry.isIntersecting, entry.intersectionRatio);
+  _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
+    const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold;
+    if (this.config.floating && this.everStartedPlaying && !this.dismissed) {
+      this._handleFloatingChange(playerIsOutOfVisibility);
     }
   }
 
+  _handleFloatingChange(playerIsOutOfVisibility: boolean) {
+    if (playerIsOutOfVisibility) {
+      this._startFloating();
+    } else {
+      this._stopFloating();
+    }
+  }
   /**
    * _addBindings
    * @private
@@ -137,9 +140,8 @@ class Visibility extends BasePlugin {
    */
   _addBindings(): void {
     this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
-      if (this.config.type === VisibilityType.FLOATING) {
-        this._startFloatingObserver();
-      }
+      this.everStartedPlaying = true;
+      Utils.Dom.setStyle(this.floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
     });
   }
 
