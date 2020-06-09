@@ -156,6 +156,7 @@ class Visibility extends BasePlugin {
    */
   destroy(): void {
     this.observer.disconnect();
+    this.eventManager.removeAll();
   }
 
   /**
