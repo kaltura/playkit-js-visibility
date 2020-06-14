@@ -13,12 +13,12 @@ const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
  * @classdesc
  */
 class Visibility extends BasePlugin {
-  appTargetContainer: HTMLElement | null;
-  floatingContainer: HTMLElement;
-  floatingPoster: HTMLElement;
-  observer: window.IntersectionObserver;
-  everStartedPlaying: boolean = false;
-  dismissed: boolean = false;
+  _appTargetContainer: HTMLElement | null;
+  _floatingContainer: HTMLElement;
+  _floatingPoster: HTMLElement;
+  _observer: window.IntersectionObserver;
+  _everStartedPlaying: boolean = false;
+  _dismissed: boolean = false;
 
   /**
    * The default configuration of the plugin.
@@ -62,16 +62,16 @@ class Visibility extends BasePlugin {
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
-    this.reset();
     if (this.config.floating) {
       this._initFloating();
     }
+
+    this._addBindings();
     const options = {
       threshold: this.config.threshold
     };
-
-    this.observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
-    this.observer.observe(this.appTargetContainer);
+    this._observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
+    this._observer.observe(this._appTargetContainer);
   }
 
   _initFloating() {
@@ -88,43 +88,44 @@ class Visibility extends BasePlugin {
         }
       }
     };
-    Utils.Object.mergeDeep(this.config, defaultFloatingConfig, Utils.Object.copyDeep(this.config));
-    this.floatingPoster = Utils.Dom.createElement('div');
-    this.floatingPoster.className = FLOATING_POSTER_CLASS;
-    this.floatingContainer = Utils.Dom.createElement('div');
-    this.floatingContainer.className = FLOATING_CONTAINER_CLASS;
+    this.config = Utils.Object.mergeDeep(defaultFloatingConfig, Utils.Object.copyDeep(this.config));
+    this._floatingPoster = Utils.Dom.createElement('div');
+    this._floatingPoster.className = FLOATING_POSTER_CLASS;
+    this._floatingContainer = Utils.Dom.createElement('div');
+    this._floatingContainer.className = FLOATING_CONTAINER_CLASS;
 
-    this.appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
-    this.floatingContainer.innerHTML = this.appTargetContainer.innerHTML;
-    this.appTargetContainer.innerHTML = '';
-    Utils.Dom.appendChild(this.appTargetContainer, this.floatingPoster);
-    Utils.Dom.appendChild(this.appTargetContainer, this.floatingContainer);
+    this._appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
+    Utils.Dom.prependTo(this._floatingPoster, this._appTargetContainer);
+    let kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
+    this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
+    Utils.Dom.appendChild(this._floatingContainer, kalturaPlayerContainer);
+
     this.config.floating.position.split('-').forEach(side => {
-      Utils.Dom.addClassName(this.floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
+      Utils.Dom.addClassName(this._floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
     });
   }
 
   _dismissed() {
-    this.dismissed = true;
+    this._dismissed = true;
     this.player.pause();
     this._stopFloating();
   }
 
   _stopFloating() {
-    Utils.Dom.removeClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.removeAttribute(this.floatingContainer, 'style');
+    Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.removeAttribute(this._floatingContainer, 'style');
   }
 
   _startFloating() {
-    Utils.Dom.addClassName(this.floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.setStyle(this.floatingContainer, 'height', this.config.floating.size.height);
-    Utils.Dom.setStyle(this.floatingContainer, 'width', this.config.floating.size.width);
-    Utils.Dom.setStyle(this.floatingContainer, 'margin', `${this.config.floating.margin.y} ${this.config.floating.margin.x}`);
+    Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.size.height);
+    Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.size.width);
+    Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.margin.y} ${this.config.floating.margin.x}`);
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
     const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold;
-    if (this.config.floating && this.everStartedPlaying && !this.dismissed) {
+    if (this.config.floating && this._everStartedPlaying && !this._dismissed) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
   }
@@ -143,8 +144,8 @@ class Visibility extends BasePlugin {
    */
   _addBindings(): void {
     this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
-      this.everStartedPlaying = true;
-      Utils.Dom.setStyle(this.floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
+      this._everStartedPlaying = true;
+      Utils.Dom.setStyle(this._floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
     });
   }
 
@@ -155,19 +156,9 @@ class Visibility extends BasePlugin {
    * @returns {void}
    */
   destroy(): void {
-    this.observer.disconnect();
-    this.eventManager.removeAll();
-  }
-
-  /**
-   * Resets the plugin.
-   * @override
-   * @public
-   * @returns {void}
-   */
-  reset(): void {
-    this.eventManager.removeAll();
-    this._addBindings();
+    this.logger.debug('destroy');
+    this._observer.disconnect();
+    this.eventManager.destroy();
   }
 }
 
