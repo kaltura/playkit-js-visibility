@@ -7,6 +7,19 @@ import 'intersection-observer';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
+const DEFUALT_FLOATING_CONFIG = {
+  floating: {
+    position: 'bottom-right',
+    size: {
+      height: '225px',
+      width: '400px'
+    },
+    margin: {
+      x: '2px',
+      y: '2px'
+    }
+  }
+};
 
 /**
  * Visibility class.
@@ -75,20 +88,7 @@ class Visibility extends BasePlugin {
   }
 
   _initFloating() {
-    const defaultFloatingConfig = {
-      floating: {
-        position: 'bottom-right',
-        size: {
-          height: '225px',
-          width: '400px'
-        },
-        margin: {
-          x: '2px',
-          y: '2px'
-        }
-      }
-    };
-    this.config = Utils.Object.mergeDeep(defaultFloatingConfig, Utils.Object.copyDeep(this.config));
+    this.config = Utils.Object.mergeDeep(DEFUALT_FLOATING_CONFIG, Utils.Object.copyDeep(this.config));
     this._floatingPoster = Utils.Dom.createElement('div');
     this._floatingPoster.className = FLOATING_POSTER_CLASS;
     this._floatingContainer = Utils.Dom.createElement('div');
