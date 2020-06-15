@@ -10,14 +10,11 @@ const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const DEFUALT_FLOATING_CONFIG = {
   floating: {
     position: 'bottom-right',
-    size: {
-      height: '225px',
-      width: '400px'
-    },
-    margin: {
-      x: '2px',
-      y: '2px'
-    }
+    height: '225px',
+    width: '400px',
+    marginX: '2px',
+    marginY: '2px',
+    dismissible: true
   }
 };
 
@@ -43,19 +40,21 @@ class Visibility extends BasePlugin {
   };
 
   getUIComponents() {
-    return [
-      {
-        label: 'dismissibleFloatingButtonComponent',
-        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-        container: 'TopBarRightControls',
-        get: DismissibleFloatingButtonComponent,
-        props: {
-          onClose: () => {
-            this.handleDismissFloating();
+    return this.config.floating && this.config.floating.dismissible
+      ? [
+          {
+            label: 'dismissibleFloatingButtonComponent',
+            presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+            container: 'TopBarRightControls',
+            get: DismissibleFloatingButtonComponent,
+            props: {
+              onClose: () => {
+                this.handleDismissFloating();
+              }
+            }
           }
-        }
-      }
-    ];
+        ]
+      : [];
   }
 
   /**
@@ -120,9 +119,9 @@ class Visibility extends BasePlugin {
 
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.size.height);
-    Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.size.width);
-    Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.margin.y} ${this.config.floating.margin.x}`);
+    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height);
+    Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width);
+    Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY} ${this.config.floating.marginX}`);
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
