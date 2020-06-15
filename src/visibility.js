@@ -51,7 +51,7 @@ class Visibility extends BasePlugin {
         get: DismissibleFloatingButtonComponent,
         props: {
           onClose: () => {
-            this._dismissed();
+            this.handleDismissFloating();
           }
         }
       }
@@ -75,6 +75,8 @@ class Visibility extends BasePlugin {
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
+    this._appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
+
     if (this.config.floating) {
       this._initFloating();
     }
@@ -83,6 +85,7 @@ class Visibility extends BasePlugin {
     const options = {
       threshold: this.config.threshold
     };
+
     this._observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
     this._observer.observe(this._appTargetContainer);
   }
@@ -94,7 +97,6 @@ class Visibility extends BasePlugin {
     this._floatingContainer = Utils.Dom.createElement('div');
     this._floatingContainer.className = FLOATING_CONTAINER_CLASS;
 
-    this._appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
     Utils.Dom.prependTo(this._floatingPoster, this._appTargetContainer);
     let kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
     this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
@@ -105,7 +107,7 @@ class Visibility extends BasePlugin {
     });
   }
 
-  _dismissed() {
+  handleDismissFloating() {
     this._dismissed = true;
     this.player.pause();
     this._stopFloating();
