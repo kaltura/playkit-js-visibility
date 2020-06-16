@@ -83,8 +83,8 @@
     "webpack-dev-server": "latest"
   },
   "peerDependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#master",
-    "playkit-js-ui": "https://github.com/kaltura/playkit-js-ui.git#master"
+    "@playkit-js/playkit-js": "0.61.2",
+    "@playkit-js/playkit-js-ui": "0.55.0"
   },
   "keywords": [
     "visibility",

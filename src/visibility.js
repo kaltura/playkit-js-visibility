@@ -24,11 +24,12 @@ const DEFUALT_FLOATING_CONFIG = {
  */
 class Visibility extends BasePlugin {
   _appTargetContainer: HTMLElement | null;
-  _floatingContainer: HTMLElement;
-  _floatingPoster: HTMLElement;
+  _floatingContainer: HTMLElement | null;
+  _floatingPoster: HTMLElement | null;
   _observer: window.IntersectionObserver;
   _everStartedPlaying: boolean = false;
   _dismissed: boolean = false;
+  _isInPIP: boolean = false;
 
   /**
    * The default configuration of the plugin.
@@ -98,12 +99,14 @@ class Visibility extends BasePlugin {
 
     Utils.Dom.prependTo(this._floatingPoster, this._appTargetContainer);
     let kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
-    this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
-    Utils.Dom.appendChild(this._floatingContainer, kalturaPlayerContainer);
+    if (this._appTargetContainer && this._floatingContainer) {
+      this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
+      Utils.Dom.appendChild(this._floatingContainer, kalturaPlayerContainer);
 
-    this.config.floating.position.split('-').forEach(side => {
-      Utils.Dom.addClassName(this._floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
-    });
+      this.config.floating.position.split('-').forEach(side => {
+        Utils.Dom.addClassName(this._floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
+      });
+    }
   }
 
   handleDismissFloating() {
@@ -126,7 +129,7 @@ class Visibility extends BasePlugin {
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
     const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold / 100;
-    if (this.config.floating && this._everStartedPlaying && !this._dismissed) {
+    if (this.config.floating && this._everStartedPlaying && !this._dismissed && !this._isInPIP) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
   }
@@ -144,6 +147,13 @@ class Visibility extends BasePlugin {
    * @returns {void}
    */
   _addBindings(): void {
+    this.eventManager.listen(this.player, this.player.Event.ENTER_PICTURE_IN_PICTURE, () => {
+      this._stopFloating();
+      this._isInPIP = true;
+    });
+    this.eventManager.listen(this.player, this.player.Event.LEAVE_PICTURE_IN_PICTURE, () => {
+      this._isInPIP = false;
+    });
     this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
       this._everStartedPlaying = true;
       Utils.Dom.setStyle(this._floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
