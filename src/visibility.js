@@ -10,10 +10,10 @@ const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const DEFUALT_FLOATING_CONFIG = {
   floating: {
     position: 'bottom-right',
-    height: '225px',
-    width: '400px',
-    marginX: '2px',
-    marginY: '2px',
+    height: '225',
+    width: '400',
+    marginX: '20',
+    marginY: '20',
     dismissible: true
   }
 };
@@ -36,7 +36,7 @@ class Visibility extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    threshold: 0.5
+    threshold: 50
   };
 
   getUIComponents() {
@@ -82,7 +82,7 @@ class Visibility extends BasePlugin {
 
     this._addBindings();
     const options = {
-      threshold: this.config.threshold
+      threshold: this.config.threshold / 100
     };
 
     this._observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
@@ -90,7 +90,7 @@ class Visibility extends BasePlugin {
   }
 
   _initFloating() {
-    this.config = Utils.Object.mergeDeep(DEFUALT_FLOATING_CONFIG, Utils.Object.copyDeep(this.config));
+    this.config = Utils.Object.mergeDeep(DEFUALT_FLOATING_CONFIG, this.config);
     this._floatingPoster = Utils.Dom.createElement('div');
     this._floatingPoster.className = FLOATING_POSTER_CLASS;
     this._floatingContainer = Utils.Dom.createElement('div');
@@ -119,13 +119,13 @@ class Visibility extends BasePlugin {
 
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height);
-    Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width);
-    Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY} ${this.config.floating.marginX}`);
+    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
+    Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
+    Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
-    const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold;
+    const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold / 100;
     if (this.config.floating && this._everStartedPlaying && !this._dismissed) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
@@ -158,7 +158,13 @@ class Visibility extends BasePlugin {
    */
   destroy(): void {
     this.logger.debug('destroy');
+    Utils.Dom.removeChild(this._appTargetContainer, this._floatingContainer);
+    Utils.Dom.removeChild(this._appTargetContainer, this._floatingPoster);
+    this._appTargetContainer = null;
+    this._floatingContainer = null;
+    this._floatingPoster = null;
     this._observer.disconnect();
+    this._observer = null;
     this.eventManager.destroy();
   }
 }
