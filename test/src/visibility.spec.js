@@ -1,1 +1,3 @@
-describe('Visibility Plugin', function() {});
+describe('Visibility Plugin', function() {
+  it('dummy test', () => {});
+});
