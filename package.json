@@ -1,0 +1,114 @@
+{
+  "name": "@playkit-js/playkit-js-visibility",
+  "version": "1.0.0",
+  "main": "dist/playkit-visibility.js",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "prebuild": "npm run clean",
+    "build": "NODE_ENV=production webpack",
+    "dev": "webpack-dev-server",
+    "watch": "webpack --progress --colors --watch",
+    "test": "NODE_ENV=test karma start --color",
+    "release": "standard-version",
+    "pushTaggedRelease": "git push --follow-tags --no-verify origin master",
+    "eslint": "eslint . --color",
+    "flow": "flow check",
+    "commit:dist": "git add --force --all dist && (git commit -m 'chore: update dist' || exit 0)",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{json,md,scss}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@playkit-js/playkit-js": "0.61.2",
+    "@playkit-js/playkit-js-ui": "0.55.0",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-istanbul": "^4.0.0",
+    "babel-plugin-transform-class-properties": "^6.22.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.23.0",
+    "chai": "^3.5.0",
+    "copy-webpack-plugin": "^4.3.1",
+    "cross-env": "^3.1.4",
+    "css-loader": "^0.28.4",
+    "eslint": "^3.10.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-flowtype": "^2.30.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha-no-only": "^0.0.5",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.20.0",
+    "flow-bin": "latest",
+    "husky": "0.14.3",
+    "istanbul": "^0.4.5",
+    "karma": "^1.5.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.1",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.2",
+    "lint-staged": "7.0.5",
+    "mocha": "^3.2.0",
+    "mocha-cli": "^1.0.1",
+    "prettier": "^1.13.5",
+    "sinon": "^2.0.0",
+    "sinon-chai": "^2.8.0",
+    "standard-version": "^4.2.0",
+    "style-loader": "^0.18.2",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "latest"
+  },
+  "peerDependencies": {
+    "@playkit-js/playkit-js": "0.61.2",
+    "@playkit-js/playkit-js-ui": "0.55.0"
+  },
+  "keywords": [
+    "visibility",
+    "floating player",
+    "auto pause",
+    "kaltura",
+    "player",
+    "playkit-js",
+    "playkit-js-visibility",
+    "html5 player"
+  ],
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaltura/playkit-js-visibility.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kaltura/playkit-js-visibility/issues"
+  },
+  "homepage": "https://github.com/kaltura/playkit-js-visibility#readme",
+  "kcc": {
+    "name": "playkit-visibility"
+  },
+  "dependencies": {
+    "intersection-observer": "^0.10.0"
+  }
+}
