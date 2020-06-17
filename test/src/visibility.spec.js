@@ -1,0 +1,1 @@
+describe('Visibility Plugin', function() {});
