@@ -1,5 +1,5 @@
 // @flow
-import {BasePlugin, Utils} from 'playkit-js';
+import {BasePlugin, Utils} from '@playkit-js/playkit-js';
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
