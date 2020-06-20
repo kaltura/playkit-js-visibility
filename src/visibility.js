@@ -27,7 +27,7 @@ class Visibility extends BasePlugin {
   _floatingContainer: HTMLElement | null;
   _floatingPoster: HTMLElement | null;
   _observer: window.IntersectionObserver;
-  _everStartedPlaying: boolean = false;
+  _playbackStartOccurred: boolean = false;
   _dismissed: boolean = false;
   _isInPIP: boolean = false;
 
@@ -129,7 +129,7 @@ class Visibility extends BasePlugin {
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
     const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold / 100;
-    if (this.config.floating && this._everStartedPlaying && !this._dismissed && !this._isInPIP) {
+    if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
   }
@@ -154,8 +154,8 @@ class Visibility extends BasePlugin {
     this.eventManager.listen(this.player, this.player.Event.LEAVE_PICTURE_IN_PICTURE, () => {
       this._isInPIP = false;
     });
-    this.eventManager.listen(this.player, this.player.Event.FIRST_PLAYING, () => {
-      this._everStartedPlaying = true;
+    this.eventManager.listen(this.player, this.player.Event.PLAYBACK_START, () => {
+      this._playbackStartOccurred = true;
       Utils.Dom.setStyle(this._floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
     });
   }
