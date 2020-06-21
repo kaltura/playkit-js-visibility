@@ -26,6 +26,7 @@
   width: 100%;
 }
 .playkit-floating-container.playkit-floating-active {
+  z-index: 9999;
   position: fixed;
 }
 
