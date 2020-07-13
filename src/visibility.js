@@ -14,7 +14,8 @@ const DEFUALT_FLOATING_CONFIG = {
     width: '400',
     marginX: '20',
     marginY: '20',
-    dismissible: true
+    dismissible: true,
+    draggable: true
   }
 };
 
@@ -120,8 +121,10 @@ class Visibility extends BasePlugin {
   _stopFloating() {
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
-    this.eventManager.unlisten(this._floatingContainer, 'mousedown');
-    this._dragStop();
+    if (this.config.floating.draggable) {
+      this.eventManager.unlisten(this._floatingContainer, 'mousedown');
+      this._dragStop();
+    }
   }
 
   _startFloating() {
@@ -129,7 +132,9 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
-    this.eventManager.listen(this._floatingContainer, 'mousedown', this._dragMouseDown.bind(this));
+    if (this.config.floating.draggable) {
+      this.eventManager.listen(this._floatingContainer, 'mousedown', this._dragMouseDown.bind(this));
+    }
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
