@@ -4,7 +4,7 @@ import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
 
-const FLOATING_DRAGGABLE_CLASS: string = 'draggable';
+const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
@@ -192,7 +192,7 @@ class Visibility extends BasePlugin {
     this.eventManager.destroy();
   }
 
-  _dragMouseDown(e) {
+  _dragMouseDown(e: MouseEvent) {
     e.preventDefault();
     // get the mouse cursor position at startup:
     this._currMousePos.x = e.clientX;
@@ -201,7 +201,7 @@ class Visibility extends BasePlugin {
     this.eventManager.listen(document, 'mousemove', this._floatingDrag.bind(this));
   }
 
-  _floatingDrag(e) {
+  _floatingDrag(e: MouseEvent) {
     if (this._throttleWait) return;
     e = e || window.event;
     e.preventDefault();
@@ -210,10 +210,13 @@ class Visibility extends BasePlugin {
     const deltaMousePosY = this._currMousePos.y - e.clientY;
     this._currMousePos.x = e.clientX;
     this._currMousePos.y = e.clientY;
-    // set the element's new position:
-    const boundClientRect = this._floatingContainer.getBoundingClientRect();
-    this._floatingContainer.style.top = boundClientRect.top - parseInt(this._floatingContainer.style.marginTop) - deltaMousePosY + 'px';
-    this._floatingContainer.style.left = boundClientRect.left - parseInt(this._floatingContainer.style.marginLeft) - deltaMousePosX + 'px';
+    const floatingContainer = this._floatingContainer; // flow
+    // set the element's new position
+    if (floatingContainer) {
+      const boundClientRect = floatingContainer.getBoundingClientRect();
+      floatingContainer.style.top = boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY + 'px';
+      floatingContainer.style.left = boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX + 'px';
+    }
 
     // handle throttling to avoid performance issues on dragging
     this._throttleWait = true;
