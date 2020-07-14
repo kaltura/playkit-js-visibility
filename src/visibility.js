@@ -4,6 +4,7 @@ import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
 
+const FLOATING_DRAGGABLE_CLASS: string = 'draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
@@ -109,6 +110,9 @@ class Visibility extends BasePlugin {
       this.config.floating.position.split('-').forEach(side => {
         Utils.Dom.addClassName(this._floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
       });
+    }
+    if (this.config.floating.draggable) {
+      Utils.Dom.addClassName(this._floatingContainer, FLOATING_DRAGGABLE_CLASS);
     }
   }
 

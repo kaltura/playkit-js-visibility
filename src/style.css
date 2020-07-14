@@ -29,6 +29,9 @@
   z-index: 9999;
   position: fixed;
 }
+.playkit-floating-container.playkit-floating-active.draggable {
+  cursor: grab;
+}
 
 .playkit-floating-dismissible {
   display: none;
