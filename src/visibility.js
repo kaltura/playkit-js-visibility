@@ -3,6 +3,7 @@ import {BasePlugin, Utils} from '@playkit-js/playkit-js';
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
+import {EventType} from './event-type';
 
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
@@ -113,11 +114,13 @@ class Visibility extends BasePlugin {
     this._dismissed = true;
     this.player.pause();
     this._stopFloating();
+    this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
 
   _stopFloating() {
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
   }
 
   _startFloating() {
@@ -125,6 +128,7 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
@@ -132,6 +136,7 @@ class Visibility extends BasePlugin {
     if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
+    this.dispatchEvent(EventType.PLAYER_VISIBILITY_CHANGED, {visible: !playerIsOutOfVisibility});
   }
 
   _handleFloatingChange(playerIsOutOfVisibility: boolean) {
