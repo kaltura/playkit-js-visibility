@@ -7,6 +7,7 @@ declare var __NAME__: string;
 
 export {Visibility as Plugin};
 export {__VERSION__ as VERSION, __NAME__ as NAME};
+export {EventType} from './event-type';
 
 const pluginName: string = 'visibility';
 registerPlugin(pluginName, Visibility);
