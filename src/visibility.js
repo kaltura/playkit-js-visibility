@@ -11,10 +11,10 @@ const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const DEFUALT_FLOATING_CONFIG = {
   floating: {
     position: 'bottom-right',
-    height: '225',
-    width: '400',
-    marginX: '20',
-    marginY: '20',
+    height: 225,
+    width: 400,
+    marginX: 0,
+    marginY: 0,
     dismissible: true
   }
 };
