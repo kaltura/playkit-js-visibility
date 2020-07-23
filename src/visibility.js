@@ -4,6 +4,7 @@ import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
 
+const DRAG_THROTTLE_MS: number = 30;
 const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
@@ -127,7 +128,8 @@ class Visibility extends BasePlugin {
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
     if (this.config.floating.draggable) {
       this.eventManager.unlisten(this._floatingContainer, 'mousedown');
-      this._dragStop();
+      this.eventManager.unlisten(this._floatingContainer, 'touchstart');
+      this._stopDrag();
     }
   }
 
@@ -137,7 +139,13 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
     if (this.config.floating.draggable) {
-      this.eventManager.listen(this._floatingContainer, 'mousedown', this._dragMouseDown.bind(this));
+      this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
+        this._startDrag(e, 'mousemove', 'mouseup');
+      });
+      this.eventManager.listen(this._floatingContainer, 'touchstart', e => {
+        this.eventManager.unlisten(this._floatingContainer, 'mousedown');
+        this._startDrag(e, 'touchmove', 'touchend');
+      });
     }
   }
 
@@ -192,24 +200,36 @@ class Visibility extends BasePlugin {
     this.eventManager.destroy();
   }
 
-  _dragMouseDown(e: MouseEvent) {
-    e.preventDefault();
+  _startDrag(e: any, moveEventName: string, endEventName: string) {
+    this.eventManager.listenOnce(document, endEventName, () => {
+      this._stopDrag();
+    });
+
     // get the mouse cursor position at startup:
-    this._currMousePos.x = e.clientX;
-    this._currMousePos.y = e.clientY;
-    this.eventManager.listen(document, 'mouseup', this._dragStop.bind(this));
-    this.eventManager.listen(document, 'mousemove', this._floatingDrag.bind(this));
+    this._currMousePos.x = this._clientX(e);
+    this._currMousePos.y = this._clientY(e);
+
+    this.eventManager.listen(document, moveEventName, () => {
+      this._moveDrag();
+    });
+  }
+  _clientX(e: any): number {
+    return e.clientX || (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientX);
+  }
+  _clientY(e: any): number {
+    return e.clientY || (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY);
   }
 
-  _floatingDrag(e: MouseEvent) {
+  _moveDrag(e: any) {
     if (this._throttleWait) return;
+
     e = e || window.event;
-    e.preventDefault();
+    // e.preventDefault();
     // calculate the new cursor position:
-    const deltaMousePosX = this._currMousePos.x - e.clientX;
-    const deltaMousePosY = this._currMousePos.y - e.clientY;
-    this._currMousePos.x = e.clientX;
-    this._currMousePos.y = e.clientY;
+    const deltaMousePosX = this._currMousePos.x - this._clientX(e);
+    const deltaMousePosY = this._currMousePos.y - this._clientY(e);
+    this._currMousePos.x = this._clientX(e);
+    this._currMousePos.y = this._clientY(e);
     const floatingContainer = this._floatingContainer; // flow
     // set the element's new position
     if (floatingContainer) {
@@ -222,13 +242,13 @@ class Visibility extends BasePlugin {
     this._throttleWait = true;
     setTimeout(() => {
       this._throttleWait = false;
-    }, 30);
+    }, DRAG_THROTTLE_MS);
   }
 
-  _dragStop() {
+  _stopDrag() {
     // stop moving when mouse button is released:
-    this.eventManager.unlisten(document, 'mouseup');
     this.eventManager.unlisten(document, 'mousemove');
+    this.eventManager.unlisten(document, 'touchmove');
   }
 }
 

@@ -24,6 +24,7 @@
 .playkit-floating-container {
   height: 100%;
   width: 100%;
+  touch-action: none;
 }
 .playkit-floating-container.playkit-floating-active {
   z-index: 9999;
