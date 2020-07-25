@@ -224,7 +224,6 @@ class Visibility extends BasePlugin {
     if (this._throttleWait) return;
 
     e = e || window.event;
-    // e.preventDefault();
     // calculate the new cursor position:
     const deltaMousePosX = this._currMousePos.x - this._clientX(e);
     const deltaMousePosY = this._currMousePos.y - this._clientY(e);
