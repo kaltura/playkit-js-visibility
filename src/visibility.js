@@ -200,7 +200,7 @@ class Visibility extends BasePlugin {
     this.eventManager.destroy();
   }
 
-  _startDrag(e: any, moveEventName: string, endEventName: string) {
+  _startDrag(e: UIEvent, moveEventName: string, endEventName: string) {
     this.eventManager.listenOnce(document, endEventName, () => {
       this._stopDrag();
     });
@@ -209,8 +209,8 @@ class Visibility extends BasePlugin {
     this._currMousePos.x = this._clientX(e);
     this._currMousePos.y = this._clientY(e);
 
-    this.eventManager.listen(document, moveEventName, () => {
-      this._moveDrag();
+    this.eventManager.listen(document, moveEventName, e => {
+      this._moveDrag(e);
     });
   }
   _clientX(e: any): number {
@@ -220,7 +220,7 @@ class Visibility extends BasePlugin {
     return e.clientY || (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY);
   }
 
-  _moveDrag(e: any) {
+  _moveDrag(e: UIEvent) {
     if (this._throttleWait) return;
 
     e = e || window.event;
