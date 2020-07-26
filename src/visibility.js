@@ -5,6 +5,8 @@ import {DismissibleFloatingButtonComponent} from './components/dismissible/dismi
 import 'intersection-observer';
 import {EventType} from './event-type';
 
+const DRAG_THROTTLE_MS: number = 30;
+const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
@@ -15,7 +17,8 @@ const DEFUALT_FLOATING_CONFIG = {
     width: '400',
     marginX: '20',
     marginY: '20',
-    dismissible: true
+    dismissible: true,
+    draggable: true
   }
 };
 
@@ -31,6 +34,8 @@ class Visibility extends BasePlugin {
   _playbackStartOccurred: boolean = false;
   _dismissed: boolean = false;
   _isInPIP: boolean = false;
+  _currMousePos: {x: number, y: number} = {x: 0, y: 0};
+  _throttleWait: boolean = false;
 
   /**
    * The default configuration of the plugin.
@@ -51,7 +56,7 @@ class Visibility extends BasePlugin {
             get: DismissibleFloatingButtonComponent,
             props: {
               onClose: () => {
-                this.handleDismissFloating();
+                this._handleDismissFloating();
               }
             }
           }
@@ -108,9 +113,12 @@ class Visibility extends BasePlugin {
         Utils.Dom.addClassName(this._floatingContainer, `${FLOATING_ACTIVE_CLASS}-${side}`);
       });
     }
+    if (this.config.floating.draggable) {
+      Utils.Dom.addClassName(this._floatingContainer, FLOATING_DRAGGABLE_CLASS);
+    }
   }
 
-  handleDismissFloating() {
+  _handleDismissFloating() {
     this._dismissed = true;
     this.player.pause();
     this._stopFloating();
@@ -120,6 +128,11 @@ class Visibility extends BasePlugin {
   _stopFloating() {
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
+    if (this.config.floating.draggable) {
+      this.eventManager.unlisten(this._floatingContainer, 'mousedown');
+      this.eventManager.unlisten(this._floatingContainer, 'touchstart');
+      this._stopDrag();
+    }
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
   }
 
@@ -128,6 +141,15 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
+    if (this.config.floating.draggable) {
+      this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
+        this._startDrag(e, 'mousemove', 'mouseup');
+      });
+      this.eventManager.listen(this._floatingContainer, 'touchstart', e => {
+        this.eventManager.unlisten(this._floatingContainer, 'mousedown');
+        this._startDrag(e, 'touchmove', 'touchend');
+      });
+    }
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
@@ -181,6 +203,64 @@ class Visibility extends BasePlugin {
     this._observer.disconnect();
     this._observer = null;
     this.eventManager.destroy();
+  }
+
+  _startDrag(e: MouseEvent | TouchEvent, moveEventName: string, endEventName: string) {
+    this.eventManager.listenOnce(document, endEventName, () => {
+      this._stopDrag();
+    });
+
+    // get the mouse cursor position at startup:
+    this._currMousePos.x = this._clientX(e);
+    this._currMousePos.y = this._clientY(e);
+
+    this.eventManager.listen(document, moveEventName, e => {
+      this._moveDrag(e);
+    });
+  }
+
+  _clientX(e: MouseEvent | TouchEvent): number {
+    if (e instanceof MouseEvent) {
+      return e.clientX;
+    }
+    return e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientX;
+  }
+
+  _clientY(e: MouseEvent | TouchEvent): number {
+    if (e instanceof MouseEvent) {
+      return e.clientY;
+    }
+    return e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY;
+  }
+
+  _moveDrag(e: MouseEvent | TouchEvent) {
+    if (this._throttleWait) return;
+
+    e = e || window.event;
+    // calculate the new cursor position:
+    const deltaMousePosX = this._currMousePos.x - this._clientX(e);
+    const deltaMousePosY = this._currMousePos.y - this._clientY(e);
+    this._currMousePos.x = this._clientX(e);
+    this._currMousePos.y = this._clientY(e);
+    const floatingContainer = this._floatingContainer; // flow
+    // set the element's new position
+    if (floatingContainer) {
+      const boundClientRect = floatingContainer.getBoundingClientRect();
+      floatingContainer.style.top = boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY + 'px';
+      floatingContainer.style.left = boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX + 'px';
+    }
+
+    // handle throttling to avoid performance issues on dragging
+    this._throttleWait = true;
+    setTimeout(() => {
+      this._throttleWait = false;
+    }, DRAG_THROTTLE_MS);
+  }
+
+  _stopDrag() {
+    // stop moving when mouse button is released:
+    this.eventManager.unlisten(document, 'mousemove');
+    this.eventManager.unlisten(document, 'touchmove');
   }
 }
 
