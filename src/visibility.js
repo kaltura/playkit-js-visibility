@@ -200,7 +200,7 @@ class Visibility extends BasePlugin {
     this.eventManager.destroy();
   }
 
-  _startDrag(e: UIEvent, moveEventName: string, endEventName: string) {
+  _startDrag(e: MouseEvent | TouchEvent, moveEventName: string, endEventName: string) {
     this.eventManager.listenOnce(document, endEventName, () => {
       this._stopDrag();
     });
@@ -213,14 +213,22 @@ class Visibility extends BasePlugin {
       this._moveDrag(e);
     });
   }
-  _clientX(e: any): number {
-    return e.clientX || (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientX);
-  }
-  _clientY(e: any): number {
-    return e.clientY || (e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY);
+
+  _clientX(e: MouseEvent | TouchEvent): number {
+    if (e instanceof MouseEvent) {
+      return e.clientX;
+    }
+    return e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientX;
   }
 
-  _moveDrag(e: UIEvent) {
+  _clientY(e: MouseEvent | TouchEvent): number {
+    if (e instanceof MouseEvent) {
+      return e.clientY;
+    }
+    return e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY;
+  }
+
+  _moveDrag(e: MouseEvent | TouchEvent) {
     if (this._throttleWait) return;
 
     e = e || window.event;
