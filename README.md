@@ -1,6 +1,5 @@
 # PlayKit JS Visibility - Visibility plugin for the [PlayKit JS Player]
 
-
 PlayKit JS Visibility is written in [ECMAScript6], statically analysed using [Flow] and transpiled in ECMAScript5 using [Babel].
 
 [flow]: https://flow.org/
@@ -40,28 +39,31 @@ yarn run build
 Finally, add the bundle as a script tag in your page, and initialize the player
 
 ```html
-<script type="text/javascript" src="/PATH/TO/FILE/playkit.js"></script>                     <!--PlayKit player-->
-<script type="text/javascript" src="/PATH/TO/FILE/playkit-visibility.js"></script>                 <!--PlayKit Visibility plugin-->
+<script type="text/javascript" src="/PATH/TO/FILE/playkit.js"></script>
+<!--PlayKit player-->
+<script type="text/javascript" src="/PATH/TO/FILE/playkit-visibility.js"></script>
+<!--PlayKit Visibility plugin-->
 <div id="player-placeholder" style="height:360px; width:640px">
-<script type="text/javascript">
-var playerContainer = document.querySelector("#player-placeholder");
-var config = {
- ...
- plugins: {
-   visibility: {
-   }
- }
- ...
-};
-var player = playkit.core.loadPlayer(config);
-playerContainer.appendChild(player.getView());
-player.play();
-</script>
+  <script type="text/javascript">
+    var playerContainer = document.querySelector("#player-placeholder");
+    var config = {
+     ...
+     plugins: {
+       visibility: {
+       }
+     }
+     ...
+    };
+    var player = playkit.core.loadPlayer(config);
+    playerContainer.appendChild(player.getView());
+    player.play();
+  </script>
+</div>
 ```
 
 ## Documentation
 
-* **[Configuration](docs/configuration.md)**
+- **[Configuration](docs/configuration.md)**
 
 ## Running the tests
 

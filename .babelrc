@@ -1,21 +1,23 @@
 {
-  "presets": [
-    "es2015"
-  ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  },
+  "ignore": ["node_modules/**/*"],
   "plugins": [
-    "transform-flow-strip-types",
-    "transform-class-properties",
-    ["transform-react-jsx",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-transform-flow-strip-types",
+    "@babel/plugin-transform-property-mutators",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-classes",
+    [
+      "@babel/plugin-transform-react-jsx",
       {
         "pragma": "KalturaPlayer.ui.h"
       }
     ]
   ],
-  "env": {
-    "test": {
-      "plugins": [
-        "istanbul"
-      ]
-    }
-  }
+  "presets": ["@babel/preset-env", "@babel/preset-flow"]
 }
