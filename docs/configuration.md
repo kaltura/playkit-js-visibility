@@ -1,5 +1,7 @@
 ## Configuration
+
 Visibility plugin configuration parameters are provided whenever a player instance is created.
+
 ```js
 var config = {
   plugins: {
@@ -21,6 +23,7 @@ The configuration uses the following structure:
 ```
 
 #### Default Configuration Values
+
 ```js
 {
 }

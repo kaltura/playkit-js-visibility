@@ -1,2 +1,2 @@
 // @flow
-declare type PKVisibilityTypes = { [type: string]: string };
+declare type PKVisibilityTypes = {[type: string]: string};
