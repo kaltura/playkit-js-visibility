@@ -3,6 +3,7 @@ import {BasePlugin, Utils} from '@playkit-js/playkit-js';
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
+import {EventType} from './event-type';
 
 const DRAG_THROTTLE_MS: number = 30;
 const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
@@ -121,6 +122,7 @@ class Visibility extends BasePlugin {
     this._dismissed = true;
     this.player.pause();
     this._stopFloating();
+    this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
 
   _stopFloating() {
@@ -131,6 +133,7 @@ class Visibility extends BasePlugin {
       this.eventManager.unlisten(this._floatingContainer, 'touchstart');
       this._stopDrag();
     }
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
   }
 
   _startFloating() {
@@ -147,6 +150,7 @@ class Visibility extends BasePlugin {
         this._startDrag(e, 'touchmove', 'touchend');
       });
     }
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
   _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
@@ -154,6 +158,7 @@ class Visibility extends BasePlugin {
     if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
       this._handleFloatingChange(playerIsOutOfVisibility);
     }
+    this.dispatchEvent(EventType.PLAYER_VISIBILITY_CHANGED, {visible: !playerIsOutOfVisibility});
   }
 
   _handleFloatingChange(playerIsOutOfVisibility: boolean) {
