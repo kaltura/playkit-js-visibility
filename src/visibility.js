@@ -1,5 +1,6 @@
 // @flow
-import {BasePlugin, Utils} from '@playkit-js/playkit-js';
+import {core, BasePlugin} from 'kaltura-player-js';
+const {Utils} = core;
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import 'intersection-observer';
