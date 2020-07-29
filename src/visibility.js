@@ -10,6 +10,7 @@ const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
+const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
 const DEFUALT_FLOATING_CONFIG = {
   floating: {
     position: 'bottom-right',
@@ -126,6 +127,7 @@ class Visibility extends BasePlugin {
   }
 
   _stopFloating() {
+    Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
     if (this.config.floating.draggable) {
@@ -138,6 +140,7 @@ class Visibility extends BasePlugin {
 
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
