@@ -246,8 +246,12 @@ class Visibility extends BasePlugin {
     // set the element's new position
     if (floatingContainer) {
       const boundClientRect = floatingContainer.getBoundingClientRect();
-      floatingContainer.style.top = boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY + 'px';
-      floatingContainer.style.left = boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX + 'px';
+      let top = Math.max(boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY, 0); // bound top
+      top = Math.min(top, window.innerHeight - boundClientRect.height - this.config.floating.marginY * 2); //bound bottom
+      floatingContainer.style.top = top + 'px';
+      let left = Math.max(boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX, 0); //bound left
+      left = Math.min(left, window.innerWidth - boundClientRect.width - this.config.floating.marginX * 2); //bound right
+      floatingContainer.style.left = left + 'px';
     }
 
     // handle throttling to avoid performance issues on dragging
