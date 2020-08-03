@@ -4,9 +4,9 @@
 
 -   [VisibilityConfigObject][1]
     -   [Parameters][2]
--   [FloatingConfigObject][3]
-    -   [Parameters][4]
--   [PositionType][5]
+    -   [Examples][3]
+-   [FloatingConfigObject][4]
+    -   [Parameters][5]
 -   [EventType][6]
     -   [PLAYER_VISIBILITY_CHANGED][7]
     -   [FLOATING_PLAYER_STATE_CHANGED][8]
@@ -23,19 +23,38 @@ Type: [Object][10]
 -   `threshold` **[number][11]** The minimum player visible area percentage to consider as visible (optional, default `50`)
 -   `floating` **[FloatingConfigObject][12]?** The minimum player visible area percentage to consider as visible
 
+### Examples
+
+```javascript
+var config = {
+plugins: {
+  visibility: {
+    // Visibility configuration here
+    threshold: 30,
+    floating: {
+      draggable: false
+    }
+  }
+}
+};
+var player = KalturaPlayer.setup(config);
+```
+
 ## FloatingConfigObject
+
+When a viewer scrolls the player out of view, a floating player would pop-up and position itself following the configuration. This allows the viewer to engage with both the video content and the site content.
 
 Type: [Object][10]
 
 ### Parameters
 
--   `position` **[string][13]** The minimum player visible area percentage to consider as visible (optional, default `'bottom-right'`)
-
-## PositionType
-
-Enum string values.
-
-Type: [string][13]
+-   `position` **(`"bottom-left"` \| `"bottom-right"` \| `"top-left"` \| `"top-right"`)** The position where the floating player will be displayed (optional, default `'bottom-right'`)
+-   `dismissible` **[boolean][13]** When set to true, viewer will be able to dismiss the floating player so that it doesn’t appear anymore while he scrolls the current page (optional, default `true`)
+-   `draggable` **[boolean][13]** When set to true, viewer will be able to drag the floating player. Uncheck if you want to have a fixed location for the floating player (optional, default `true`)
+-   `height` **[number][11]** The height of the floating player in pixels (optional, default `225`)
+-   `width` **[number][11]** The width of the floating player in pixels (optional, default `400`)
+-   `marginX` **[number][11]** The margin, in pixels, from the selected edge, on the X-Axis (optional, default `20`)
+-   `marginY` **[number][11]** The margin, in pixels, from the selected edge, on the Y-Axis (optional, default `20`)
 
 ## EventType
 
@@ -57,11 +76,11 @@ Fired when the player stopped floating due to end user dismissal
 
 [2]: #parameters
 
-[3]: #floatingconfigobject
+[3]: #examples
 
-[4]: #parameters-1
+[4]: #floatingconfigobject
 
-[5]: #positiontype
+[5]: #parameters-1
 
 [6]: #eventtype
 
@@ -77,4 +96,4 @@ Fired when the player stopped floating due to end user dismissal
 
 [12]: #floatingconfigobject
 
-[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
