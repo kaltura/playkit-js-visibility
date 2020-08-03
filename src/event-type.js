@@ -1,4 +1,7 @@
 // @flow
+/**
+ * @typedef {Object} EventType
+ */
 const EventType: PKEventTypes = {
   /**
    * Fired when the player got in or out of visibility (according to the minimum visible percentage threshold)

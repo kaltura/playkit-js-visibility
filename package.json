@@ -14,6 +14,8 @@
     "eslint": "eslint . --color",
     "flow": "flow check",
     "commit:dist": "git add --force --all dist && (git commit -m 'chore: update dist' || exit 0)",
+    "docs:generate": "documentation build flow-typed/** src/** -f md -o docs/configuration.md",
+    "docs:serve": "documentation serve flow-typed/** src/** --watch",
     "precommit": "lint-staged",
     "prettier:fix": "prettier --write ."
   },
@@ -51,6 +53,7 @@
     "chai": "^4.2.0",
     "cross-env": "^7.0.2",
     "css-loader": "^4.0.0",
+    "documentation": "latest",
     "eslint": "^7.4.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-loader": "^4.0.2",
