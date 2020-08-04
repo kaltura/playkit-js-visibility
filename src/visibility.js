@@ -11,6 +11,7 @@ const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
 const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
+const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
 const DEFUALT_FLOATING_CONFIG = {
   floating: {
     position: 'bottom-right',
@@ -127,6 +128,7 @@ class Visibility extends BasePlugin {
   }
 
   _stopFloating() {
+    Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
     if (this.config.floating.draggable) {
@@ -139,6 +141,7 @@ class Visibility extends BasePlugin {
 
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.floating.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.floating.marginY}px ${this.config.floating.marginX}px`);
@@ -247,8 +250,12 @@ class Visibility extends BasePlugin {
     // set the element's new position
     if (floatingContainer) {
       const boundClientRect = floatingContainer.getBoundingClientRect();
-      floatingContainer.style.top = boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY + 'px';
-      floatingContainer.style.left = boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX + 'px';
+      let top = Math.max(boundClientRect.top - parseInt(floatingContainer.style.marginTop) - deltaMousePosY, 0); // bound top
+      top = Math.min(top, window.innerHeight - boundClientRect.height - this.config.floating.marginY * 2); //bound bottom
+      floatingContainer.style.top = top + 'px';
+      let left = Math.max(boundClientRect.left - parseInt(floatingContainer.style.marginLeft) - deltaMousePosX, 0); //bound left
+      left = Math.min(left, window.innerWidth - boundClientRect.width - this.config.floating.marginX * 2); //bound right
+      floatingContainer.style.left = left + 'px';
     }
 
     // handle throttling to avoid performance issues on dragging

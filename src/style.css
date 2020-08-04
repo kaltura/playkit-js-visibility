@@ -5,19 +5,21 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  position: absolute;
+  display: none;
 }
-
-.playkit-floating-active-top {
+.playkit-floating-poster.playkit-floating-poster-show {
+  display: block;
+}
+.playkit-floating-active.playkit-floating-active-top {
   top: 0;
 }
-.playkit-floating-active-bottom {
+.playkit-floating-active.playkit-floating-active-bottom {
   bottom: 0;
 }
-.playkit-floating-active-left {
+.playkit-floating-active.playkit-floating-active-left {
   left: 0;
 }
-.playkit-floating-active-right {
+.playkit-floating-active.playkit-floating-active-right {
   right: 0;
 }
 
