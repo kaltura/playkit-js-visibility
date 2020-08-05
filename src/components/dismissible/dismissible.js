@@ -1,5 +1,8 @@
 // @flow
-/** @jsx h */
+/**
+ * @jsx h
+ * @ignore
+ */
 import {h, preact, preacti18n, utils, Components} from '@playkit-js/playkit-js-ui';
 const Localizer = preacti18n.Localizer;
 const Text = preacti18n.Text;

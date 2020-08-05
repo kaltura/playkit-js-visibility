@@ -12,21 +12,20 @@ const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
-const DEFUALT_FLOATING_CONFIG = {
-  floating: {
-    position: 'bottom-right',
-    height: '225',
-    width: '400',
-    marginX: '20',
-    marginY: '20',
-    dismissible: true,
-    draggable: true
-  }
+const DEFAULT_FLOATING_CONFIG: FloatingConfigObject = {
+  position: 'bottom-right',
+  height: '225',
+  width: '400',
+  marginX: '20',
+  marginY: '20',
+  dismissible: true,
+  draggable: true
 };
 
 /**
  * Visibility class.
  * @classdesc
+ * @ignore
  */
 class Visibility extends BasePlugin {
   _appTargetContainer: HTMLElement | null;
@@ -41,10 +40,10 @@ class Visibility extends BasePlugin {
 
   /**
    * The default configuration of the plugin.
-   * @type {Object}
+   * @type {VisibilityConfigObject}
    * @static
    */
-  static defaultConfig: Object = {
+  static defaultConfig: VisibilityConfigObject = {
     threshold: 50
   };
 
@@ -99,7 +98,7 @@ class Visibility extends BasePlugin {
   }
 
   _initFloating() {
-    this.config = Utils.Object.mergeDeep(DEFUALT_FLOATING_CONFIG, this.config);
+    this.config = Utils.Object.mergeDeep({floating: DEFAULT_FLOATING_CONFIG}, this.config);
     this._floatingPoster = Utils.Dom.createElement('div');
     this._floatingPoster.className = FLOATING_POSTER_CLASS;
     this._floatingContainer = Utils.Dom.createElement('div');
