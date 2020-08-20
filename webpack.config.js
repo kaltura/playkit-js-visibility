@@ -20,7 +20,6 @@ module.exports = {
     path: __dirname + '/dist',
     filename: '[name].js',
     library: ['KalturaPlayer', 'plugins', 'visibility'],
-    umdNamedDefine: true,
     devtoolModuleFilenameTemplate: './visibility/[resource-path]'
   },
   devtool: 'source-map',
