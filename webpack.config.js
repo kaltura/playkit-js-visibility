@@ -77,12 +77,6 @@ module.exports = {
       commonjs2: 'kaltura-player-js',
       amd: 'kaltura-player-js',
       root: ['KalturaPlayer']
-    },
-    '@playkit-js/playkit-js-ui': {
-      commonjs: '@playkit-js/playkit-js-ui',
-      commonjs2: '@playkit-js/playkit-js-ui',
-      amd: 'playkit-js-ui',
-      root: ['KalturaPlayer', 'ui']
     }
   }
 };
