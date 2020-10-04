@@ -29,9 +29,9 @@ class DismissibleFloatingButtonComponent extends Component {
               props.onClose();
             }
           }}
-          aria-label={<Text id="overlay.close"/>}
+          aria-label={<Text id="overlay.close" />}
           className={'playkit-floating-dismissible playkit-icon playkit-icon-close'}>
-          <Icon type={IconType.Close}/>
+          <Icon type={IconType.Close} />
         </a>
       </Localizer>
     );
