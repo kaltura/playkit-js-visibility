@@ -3,13 +3,13 @@
  * @jsx h
  * @ignore
  */
-import {h, preact, preacti18n, utils, Components} from '@playkit-js/playkit-js-ui';
-const Localizer = preacti18n.Localizer;
-const Text = preacti18n.Text;
-const Component = preact.Component;
-const KeyMap = utils.KeyMap;
-const Icon = Components.Icon;
-const IconType = Components.IconType;
+import {ui} from 'kaltura-player-js';
+
+const {h, preact, preacti18n, utils, Components} = ui;
+const {Localizer, Text} = preacti18n;
+const {Component} = preact;
+const {KeyMap} = utils;
+const {Icon, IconType} = Components;
 
 class DismissibleFloatingButtonComponent extends Component {
   render(props: any) {
