@@ -11,7 +11,7 @@
     [
       "@babel/plugin-transform-react-jsx",
       {
-        "pragma": "ui.h"
+        "pragma": "KalturaPlayer.ui.h"
       }
     ]
   ],
