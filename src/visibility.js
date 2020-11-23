@@ -33,10 +33,14 @@ class Visibility extends BasePlugin {
   _floatingPoster: HTMLElement | null;
   _observer: window.IntersectionObserver;
   _playbackStartOccurred: boolean = false;
-  _dismissed: boolean = false;
+  _floatingDismissed: boolean = false;
   _isInPIP: boolean = false;
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
+  _playerIsInVisibility: boolean = false;
+  _tabIsActive: boolean = false;
+  _autoPaused: boolean = false;
+  _isFloating: boolean = false;
 
   /**
    * The default configuration of the plugin.
@@ -95,6 +99,11 @@ class Visibility extends BasePlugin {
 
     this._observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
     this._observer.observe(this._appTargetContainer);
+
+    this.eventManager.listen(this.player, this.player.Event.TAB_VISIBILITY_CHANGE, e => {
+      this._handleTabVisibilityChange(e.payload.active);
+    });
+    this._tabIsActive = player.isTabActive;
   }
 
   _initFloating() {
@@ -120,13 +129,14 @@ class Visibility extends BasePlugin {
   }
 
   _handleDismissFloating() {
-    this._dismissed = true;
+    this._floatingDismissed = true;
     this.player.pause();
     this._stopFloating();
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
 
   _stopFloating() {
+    this._isFloating = false;
     Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.removeAttribute(this._floatingContainer, 'style');
@@ -139,6 +149,7 @@ class Visibility extends BasePlugin {
   }
 
   _startFloating() {
+    this._isFloating = true;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.floating.height + 'px');
@@ -156,19 +167,45 @@ class Visibility extends BasePlugin {
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
-  _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
-    const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold / 100;
-    if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
-      this._handleFloatingChange(playerIsOutOfVisibility);
+  _handleTabVisibilityChange(tabIsActive: boolean) {
+    this.logger.debug('_handleTabVisibilityChange', tabIsActive, this.player.paused, this._autoPaused);
+    this._tabIsActive = tabIsActive;
+    if (this.config.autoPause && !this._isInPIP) {
+      this._handleAutoPause();
     }
-    this.dispatchEvent(EventType.PLAYER_VISIBILITY_CHANGED, {visible: !playerIsOutOfVisibility});
   }
 
-  _handleFloatingChange(playerIsOutOfVisibility: boolean) {
-    if (playerIsOutOfVisibility) {
-      this._startFloating();
-    } else {
+  _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
+    const prevPlayerIsInVisibility = this._playerIsInVisibility;
+    this._playerIsInVisibility = entries[0].intersectionRatio >= this.config.threshold / 100;
+    this.logger.debug('_handleVisibilityChange', this._playerIsInVisibility, prevPlayerIsInVisibility);
+    if (!this._isInPIP) {
+      if (this.config.floating && this._playbackStartOccurred && !this._floatingDismissed) {
+        this._handleFloatingChange();
+      }
+      if (this.config.autoPause && this._playerIsInVisibility != prevPlayerIsInVisibility) {
+        this._handleAutoPause();
+      }
+    }
+    this.dispatchEvent(EventType.PLAYER_VISIBILITY_CHANGED, {visible: this._playerIsInVisibility});
+  }
+  _handleAutoPause() {
+    this.logger.debug('_handleAutoPause', this._isFloating, this._playerIsInVisibility, this._tabIsActive);
+    if ((!this._isFloating && !this._playerIsInVisibility) || !this._tabIsActive) {
+      if (!this.player.paused) {
+        this._autoPaused = true;
+        this.player.pause();
+      }
+    } else if (this._autoPaused) {
+      this._autoPaused = false;
+      this.player.play();
+    }
+  }
+  _handleFloatingChange() {
+    if (this._playerIsInVisibility) {
       this._stopFloating();
+    } else {
+      this._startFloating();
     }
   }
   /**

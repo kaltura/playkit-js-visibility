@@ -2,6 +2,7 @@
  * @typedef {Object} VisibilityConfigObject
  * @param {number} [threshold=50] - The minimum player visible area percentage to consider as visible
  * @param {FloatingConfigObject=} floating - The minimum player visible area percentage to consider as visible
+ * @param {boolean=} autoPause - Should the player pause when out of visibility (if both floating and autoPause are active, the floating mechanism takes precedence)
  * @description Visibility plugin configuration parameters are provided whenever a player instance is created.
  * @example var config = {
  * plugins: {
@@ -18,7 +19,8 @@
  */
 declare type VisibilityConfigObject = {
   threshold: number,
-  floating?: FloatingConfigObject
+  floating?: FloatingConfigObject,
+  autoPause?: boolean
 };
 /**
  * @typedef {Object} FloatingConfigObject
