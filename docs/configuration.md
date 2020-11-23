@@ -2,15 +2,15 @@
 
 ### Table of Contents
 
-- [VisibilityConfigObject][1]
-  - [Parameters][2]
-  - [Examples][3]
-- [FloatingConfigObject][4]
-  - [Parameters][5]
-- [EventType][6]
-  - [PLAYER_VISIBILITY_CHANGED][7]
-  - [FLOATING_PLAYER_STATE_CHANGED][8]
-  - [FLOATING_PLAYER_DISMISSED][9]
+-   [VisibilityConfigObject][1]
+    -   [Parameters][2]
+    -   [Examples][3]
+-   [FloatingConfigObject][4]
+    -   [Parameters][5]
+-   [EventType][6]
+    -   [PLAYER_VISIBILITY_CHANGED][7]
+    -   [FLOATING_PLAYER_STATE_CHANGED][8]
+    -   [FLOATING_PLAYER_DISMISSED][9]
 
 ## VisibilityConfigObject
 
@@ -20,22 +20,23 @@ Type: [Object][10]
 
 ### Parameters
 
-- `threshold` **[number][11]** The minimum player visible area percentage to consider as visible (optional, default `50`)
-- `floating` **[FloatingConfigObject][12]?** The minimum player visible area percentage to consider as visible
+-   `threshold` **[number][11]** The minimum player visible area percentage to consider as visible (optional, default `50`)
+-   `floating` **[FloatingConfigObject][12]?** The minimum player visible area percentage to consider as visible
+-   `autoPause` **[boolean][13]?** Should the player pause when out of visibility (if both floating and autoPause are active, the floating mechanism takes precedence)
 
 ### Examples
 
 ```javascript
 var config = {
-  plugins: {
-    visibility: {
-      // Visibility configuration here
-      threshold: 30,
-      floating: {
-        draggable: false
-      }
+plugins: {
+  visibility: {
+    // Visibility configuration here
+    threshold: 30,
+    floating: {
+      draggable: false
     }
   }
+}
 };
 var player = KalturaPlayer.setup(config);
 ```
@@ -48,13 +49,13 @@ Type: [Object][10]
 
 ### Parameters
 
-- `position` **(`"bottom-left"` \| `"bottom-right"` \| `"top-left"` \| `"top-right"`)** The position where the floating player will be displayed (optional, default `'bottom-right'`)
-- `dismissible` **[boolean][13]** When set to true, viewer will be able to dismiss the floating player so that it doesn’t appear anymore while he scrolls the current page (optional, default `true`)
-- `draggable` **[boolean][13]** When set to true, viewer will be able to drag the floating player. Uncheck if you want to have a fixed location for the floating player (optional, default `true`)
-- `height` **[number][11]** The height of the floating player in pixels (optional, default `225`)
-- `width` **[number][11]** The width of the floating player in pixels (optional, default `400`)
-- `marginX` **[number][11]** The margin, in pixels, from the selected edge, on the X-Axis (optional, default `20`)
-- `marginY` **[number][11]** The margin, in pixels, from the selected edge, on the Y-Axis (optional, default `20`)
+-   `position` **(`"bottom-left"` \| `"bottom-right"` \| `"top-left"` \| `"top-right"`)** The position where the floating player will be displayed (optional, default `'bottom-right'`)
+-   `dismissible` **[boolean][13]** When set to true, viewer will be able to dismiss the floating player so that it doesn’t appear anymore while he scrolls the current page (optional, default `true`)
+-   `draggable` **[boolean][13]** When set to true, viewer will be able to drag the floating player. Uncheck if you want to have a fixed location for the floating player (optional, default `true`)
+-   `height` **[number][11]** The height of the floating player in pixels (optional, default `225`)
+-   `width` **[number][11]** The width of the floating player in pixels (optional, default `400`)
+-   `marginX` **[number][11]** The margin, in pixels, from the selected edge, on the X-Axis (optional, default `20`)
+-   `marginY` **[number][11]** The margin, in pixels, from the selected edge, on the Y-Axis (optional, default `20`)
 
 ## EventType
 
@@ -73,15 +74,27 @@ Fired when the player started / stopped floating due to visibility change
 Fired when the player stopped floating due to end user dismissal
 
 [1]: #visibilityconfigobject
+
 [2]: #parameters
+
 [3]: #examples
+
 [4]: #floatingconfigobject
+
 [5]: #parameters-1
+
 [6]: #eventtype
+
 [7]: #player_visibility_changed
+
 [8]: #floating_player_state_changed
+
 [9]: #floating_player_dismissed
+
 [10]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
 [11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
 [12]: #floatingconfigobject
+
 [13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
