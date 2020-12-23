@@ -1,13 +1,11 @@
 /**
  * @typedef {Object} VisibilityConfigObject
- * @param {number} [threshold=50] - The minimum player visible area percentage to consider as visible
  * @param {FloatingConfigObject=} floating - The minimum player visible area percentage to consider as visible
  * @description Visibility plugin configuration parameters are provided whenever a player instance is created.
  * @example var config = {
  * plugins: {
  *   visibility: {
  *     // Visibility configuration here
- *     threshold: 30,
  *     floating: {
  *       draggable: false
  *     }
@@ -17,7 +15,6 @@
  * var player = KalturaPlayer.setup(config);
  */
 declare type VisibilityConfigObject = {
-  threshold: number,
   floating?: FloatingConfigObject
 };
 /**

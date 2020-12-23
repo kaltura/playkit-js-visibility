@@ -3,7 +3,6 @@ import {core, BasePlugin} from 'kaltura-player-js';
 const {Utils} = core;
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
-import 'intersection-observer';
 import {EventType} from './event-type';
 
 const DRAG_THROTTLE_MS: number = 30;
@@ -31,7 +30,6 @@ class Visibility extends BasePlugin {
   _appTargetContainer: HTMLElement | null;
   _floatingContainer: HTMLElement | null;
   _floatingPoster: HTMLElement | null;
-  _observer: window.IntersectionObserver;
   _playbackStartOccurred: boolean = false;
   _dismissed: boolean = false;
   _isInPIP: boolean = false;
@@ -43,9 +41,7 @@ class Visibility extends BasePlugin {
    * @type {VisibilityConfigObject}
    * @static
    */
-  static defaultConfig: VisibilityConfigObject = {
-    threshold: 50
-  };
+  static defaultConfig: VisibilityConfigObject = {};
 
   getUIComponents() {
     return this.config.floating && this.config.floating.dismissible
@@ -89,12 +85,6 @@ class Visibility extends BasePlugin {
     }
 
     this._addBindings();
-    const options = {
-      threshold: this.config.threshold / 100
-    };
-
-    this._observer = new window.IntersectionObserver(this._handleVisibilityChange.bind(this), options);
-    this._observer.observe(this._appTargetContainer);
   }
 
   _initFloating() {
@@ -156,19 +146,11 @@ class Visibility extends BasePlugin {
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
-  _handleVisibilityChange(entries: Array<window.IntersectionObserverEntry>) {
-    const playerIsOutOfVisibility = entries[0].intersectionRatio < this.config.threshold / 100;
-    if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
-      this._handleFloatingChange(playerIsOutOfVisibility);
-    }
-    this.dispatchEvent(EventType.PLAYER_VISIBILITY_CHANGED, {visible: !playerIsOutOfVisibility});
-  }
-
-  _handleFloatingChange(playerIsOutOfVisibility: boolean) {
-    if (playerIsOutOfVisibility) {
-      this._startFloating();
-    } else {
+  _handleFloatingChange(playerIsVisibile: boolean) {
+    if (playerIsVisibile) {
       this._stopFloating();
+    } else {
+      this._startFloating();
     }
   }
   /**
@@ -183,6 +165,11 @@ class Visibility extends BasePlugin {
     });
     this.eventManager.listen(this.player, this.player.Event.LEAVE_PICTURE_IN_PICTURE, () => {
       this._isInPIP = false;
+    });
+    this.eventManager.listen(this.player, this.player.Event.SCROLL_VISIBILITY_CHANGE, e => {
+      if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
+        this._handleFloatingChange(e.payload.visible);
+      }
     });
     this.eventManager.listen(this.player, this.player.Event.PLAYBACK_START, () => {
       this._playbackStartOccurred = true;

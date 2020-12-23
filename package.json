@@ -111,7 +111,5 @@
   "kcc": {
     "name": "playkit-visibility"
   },
-  "dependencies": {
-    "intersection-observer": "^0.10.0"
-  }
+  "dependencies": {}
 }
