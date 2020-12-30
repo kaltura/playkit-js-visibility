@@ -35,6 +35,7 @@ class Visibility extends BasePlugin {
   _isInPIP: boolean = false;
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
+  _viewablityManager: Utils.ViewabilityManager;
 
   /**
    * The default configuration of the plugin.
@@ -166,9 +167,10 @@ class Visibility extends BasePlugin {
     this.eventManager.listen(this.player, this.player.Event.LEAVE_PICTURE_IN_PICTURE, () => {
       this._isInPIP = false;
     });
-    this.eventManager.listen(this.player, this.player.Event.SCROLL_VISIBILITY_CHANGE, e => {
+    this._viewablityManager = new Utils.ViewabilityManager();
+    this._viewablityManager.observe(this._appTargetContainer, this.player.config.playback.visibilityThreshold / 100, (visible: boolean) => {
       if (this.config.floating && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
-        this._handleFloatingChange(e.payload.visible);
+        this._handleFloatingChange(visible);
       }
     });
     this.eventManager.listen(this.player, this.player.Event.PLAYBACK_START, () => {
@@ -190,9 +192,8 @@ class Visibility extends BasePlugin {
     this._appTargetContainer = null;
     this._floatingContainer = null;
     this._floatingPoster = null;
-    this._observer.disconnect();
-    this._observer = null;
     this.eventManager.destroy();
+    this._viewablityManager.destroy();
   }
 
   _startDrag(e: MouseEvent | TouchEvent, moveEventName: string, endEventName: string) {
