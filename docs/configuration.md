@@ -2,60 +2,31 @@
 
 ### Table of Contents
 
--   [VisibilityConfigObject][1]
+-   [FloatingConfigObject][1]
     -   [Parameters][2]
-    -   [Examples][3]
--   [FloatingConfigObject][4]
-    -   [Parameters][5]
--   [EventType][6]
-    -   [FLOATING_PLAYER_STATE_CHANGED][7]
-    -   [FLOATING_PLAYER_DISMISSED][8]
-
-## VisibilityConfigObject
-
-Visibility plugin configuration parameters are provided whenever a player instance is created.
-
-Type: [Object][9]
-
-### Parameters
-
--   `floating` **[FloatingConfigObject][10]?** The minimum player visible area percentage to consider as visible
-
-### Examples
-
-```javascript
-var config = {
-plugins: {
-  visibility: {
-    // Visibility configuration here
-    floating: {
-      draggable: false
-    }
-  }
-}
-};
-var player = KalturaPlayer.setup(config);
-```
+-   [EventType][3]
+    -   [FLOATING_PLAYER_STATE_CHANGED][4]
+    -   [FLOATING_PLAYER_DISMISSED][5]
 
 ## FloatingConfigObject
 
 When a viewer scrolls the player out of view, a floating player would pop-up and position itself following the configuration. This allows the viewer to engage with both the video content and the site content.
 
-Type: [Object][9]
+Type: [Object][6]
 
 ### Parameters
 
 -   `position` **(`"bottom-left"` \| `"bottom-right"` \| `"top-left"` \| `"top-right"`)** The position where the floating player will be displayed (optional, default `'bottom-right'`)
--   `dismissible` **[boolean][11]** When set to true, viewer will be able to dismiss the floating player so that it doesn’t appear anymore while he scrolls the current page (optional, default `true`)
--   `draggable` **[boolean][11]** When set to true, viewer will be able to drag the floating player. Uncheck if you want to have a fixed location for the floating player (optional, default `true`)
--   `height` **[number][12]** The height of the floating player in pixels (optional, default `225`)
--   `width` **[number][12]** The width of the floating player in pixels (optional, default `400`)
--   `marginX` **[number][12]** The margin, in pixels, from the selected edge, on the X-Axis (optional, default `20`)
--   `marginY` **[number][12]** The margin, in pixels, from the selected edge, on the Y-Axis (optional, default `20`)
+-   `dismissible` **[boolean][7]** When set to true, viewer will be able to dismiss the floating player so that it doesn’t appear anymore while he scrolls the current page (optional, default `true`)
+-   `draggable` **[boolean][7]** When set to true, viewer will be able to drag the floating player. Uncheck if you want to have a fixed location for the floating player (optional, default `true`)
+-   `height` **[number][8]** The height of the floating player in pixels (optional, default `225`)
+-   `width` **[number][8]** The width of the floating player in pixels (optional, default `400`)
+-   `marginX` **[number][8]** The margin, in pixels, from the selected edge, on the X-Axis (optional, default `20`)
+-   `marginY` **[number][8]** The margin, in pixels, from the selected edge, on the Y-Axis (optional, default `20`)
 
 ## EventType
 
-Type: [Object][9]
+Type: [Object][6]
 
 ### FLOATING_PLAYER_STATE_CHANGED
 
@@ -65,26 +36,18 @@ Fired when the player started / stopped floating due to visibility change
 
 Fired when the player stopped floating due to end user dismissal
 
-[1]: #visibilityconfigobject
+[1]: #floatingconfigobject
 
 [2]: #parameters
 
-[3]: #examples
+[3]: #eventtype
 
-[4]: #floatingconfigobject
+[4]: #floating_player_state_changed
 
-[5]: #parameters-1
+[5]: #floating_player_dismissed
 
-[6]: #eventtype
+[6]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[7]: #floating_player_state_changed
+[7]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
 
-[8]: #floating_player_dismissed
-
-[9]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
-
-[10]: #floatingconfigobject
-
-[11]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
-
-[12]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[8]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
