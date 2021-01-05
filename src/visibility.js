@@ -164,15 +164,17 @@ class Visibility extends BasePlugin {
     this.eventManager.listen(this.player, this.player.Event.LEAVE_PICTURE_IN_PICTURE, () => {
       this._isInPIP = false;
     });
-    this.player.viewabilityManager.observe(this._appTargetContainer, this.player.config.visibility.playerThreshold / 100, (visible: boolean) => {
-      if (this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
-        this._handleFloatingChange(visible);
-      }
-    });
+    this.player.viewabilityManager.observe(this._appTargetContainer, this._handleViewabilityChanged.bind(this));
     this.eventManager.listen(this.player, this.player.Event.PLAYBACK_START, () => {
       this._playbackStartOccurred = true;
       Utils.Dom.setStyle(this._floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
     });
+  }
+
+  _handleViewabilityChanged(visible: boolean) {
+    if (this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
+      this._handleFloatingChange(visible);
+    }
   }
 
   /**
@@ -188,6 +190,7 @@ class Visibility extends BasePlugin {
     this._appTargetContainer = null;
     this._floatingContainer = null;
     this._floatingPoster = null;
+    this.player.viewabilityManager.unObserve(this._appTargetContainer, this._handleViewabilityChanged.bind(this));
     this.eventManager.destroy();
   }
 
