@@ -171,8 +171,8 @@ class Visibility extends BasePlugin {
     });
   }
 
-  _handleViewabilityChanged(visible: boolean) {
-    if (this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
+  _handleViewabilityChanged(visible: boolean, type: string) {
+    if (type === this.player.ViewabilityType.VIEWPORT && this._playbackStartOccurred && !this._dismissed && !this._isInPIP) {
       this._handleFloatingChange(visible);
     }
   }
