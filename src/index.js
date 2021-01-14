@@ -12,5 +12,5 @@ export {Visibility as Plugin};
 export {VERSION, NAME};
 export {EventType} from './event-type';
 
-const pluginName: string = 'visibility';
+const pluginName: string = 'floating';
 registerPlugin(pluginName, Visibility);
