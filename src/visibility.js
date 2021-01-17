@@ -187,10 +187,10 @@ class Visibility extends BasePlugin {
     this.logger.debug('destroy');
     Utils.Dom.removeChild(this._appTargetContainer, this._floatingContainer);
     Utils.Dom.removeChild(this._appTargetContainer, this._floatingPoster);
+    this.player.viewabilityManager.unObserve(this._appTargetContainer, this._handleViewabilityChanged.bind(this));
     this._appTargetContainer = null;
     this._floatingContainer = null;
     this._floatingPoster = null;
-    this.player.viewabilityManager.unObserve(this._appTargetContainer, this._handleViewabilityChanged.bind(this));
     this.eventManager.destroy();
   }
 
