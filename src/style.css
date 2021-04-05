@@ -40,6 +40,7 @@
   display: none;
   height: 24px;
   width: 24px;
+  pointer-events: auto;
 }
 
 .playkit-floating-container.playkit-floating-active .playkit-floating-dismissible {
