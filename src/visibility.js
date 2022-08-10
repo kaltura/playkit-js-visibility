@@ -169,6 +169,14 @@ class Visibility extends BasePlugin {
       this._playbackStartOccurred = true;
       Utils.Dom.setStyle(this._floatingPoster, 'background-image', `url("${this.player.config.sources.poster}")`);
     });
+    this.eventManager.listen(this.player, this.player.Event.ENTER_FULLSCREEN, () => {
+      let dismissibleButton = Utils.Dom.getElementBySelector('.playkit-floating-dismissible');
+      Utils.Dom.addClassName(dismissibleButton, 'playkit-floating-infullscreen');
+    });
+    this.eventManager.listen(this.player, this.player.Event.EXIT_FULLSCREEN, () => {
+      let dismissibleButton = Utils.Dom.getElementBySelector('.playkit-floating-dismissible');
+      Utils.Dom.removeClassName(dismissibleButton, 'playkit-floating-infullscreen');
+    });
   }
 
   _handleViewabilityChanged(visible: boolean, type: string) {
