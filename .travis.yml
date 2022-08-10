@@ -1,9 +1,9 @@
 conditions: v1
 sudo: required
-dist: xenial
+dist: focal
 language: node_js
 node_js:
-  - 18
+  - 'node'
 
 addons:
   chrome: stable
