@@ -45,3 +45,6 @@
 .playkit-floating-container.playkit-floating-active .playkit-floating-dismissible {
   display: inline-block;
 }
+.playkit-floating-dismissible.playkit-floating-infullscreen{
+  display: none !important;
+}
