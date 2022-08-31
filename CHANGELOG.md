@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/kaltura/playkit-js-visibility/compare/v2.1.0...v2.1.1) (2022-08-31)
+
+
+### Build System
+
+* set prerelease false ([0751a51](https://github.com/kaltura/playkit-js-visibility/commit/0751a51))
+* **FEC-10700:** Improvement for CI/CD ([#36](https://github.com/kaltura/playkit-js-visibility/issues/36)) ([0d8f3a7](https://github.com/kaltura/playkit-js-visibility/commit/0d8f3a7))
+* **FEC-11389:** reduce builds from travis ([e7e90a1](https://github.com/kaltura/playkit-js-visibility/commit/e7e90a1))
+
+
+
 ## [2.1.0](https://github.com/kaltura/playkit-js-visibility/compare/v2.0.1...v2.1.0) (2021-01-28)
 
 
