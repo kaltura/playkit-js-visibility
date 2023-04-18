@@ -42,3 +42,4 @@ module.exports = function (config) {
   karmaConf.browsers = ['Chrome_browser'];
   config.set(karmaConf);
 };
+
