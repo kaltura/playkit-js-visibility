@@ -1,10 +1,12 @@
 # PlayKit JS Visibility - Visibility plugin for the [PlayKit JS Player]
 
+[![Build Status](https://github.com/kaltura/playkit-js-visibility/actions/workflows/run_canary_full_flow.yaml/badge.svg)](https://github.com/kaltura/playkit-js-visibility/actions/workflows/run_canary_full_flow.yaml)
+
 PlayKit JS Visibility is written in [ECMAScript6], statically analysed using [Flow] and transpiled in ECMAScript5 using [Babel].
 
-[flow]: https://flow.org/
-[ecmascript6]: https://github.com/ericdouglas/ES6-Learning#articles--tutorials
-[babel]: https://babeljs.io
+[Flow]: https://flow.org/
+[ECMAScript6]: https://github.com/ericdouglas/ES6-Learning#articles--tutorials
+[Babel]: https://babeljs.io
 
 ## Getting Started
 
