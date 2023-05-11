@@ -3,7 +3,7 @@
  * @jsx h
  * @ignore
  */
-import {ui} from 'kaltura-player-js';
+import {ui} from '@playkit-js/kaltura-player-js';
 
 const {h, preact, preacti18n, utils, Components} = ui;
 const {Localizer, Text} = preacti18n;
