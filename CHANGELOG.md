@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 2.1.5 (2023-05-17)
+
+
+### Bug Fixes
+
+* **FEC-13123:** replace travis with github actions ([#65](https://github.com/kaltura/playkit-js-visibility/issues/65)) ([01aa718](https://github.com/kaltura/playkit-js-visibility/commit/01aa718))
+
+
+
 ### 2.1.4 (2023-05-07)
 
 
