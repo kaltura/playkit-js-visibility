@@ -14,9 +14,9 @@ const {Icon, IconType} = Components;
 class DismissibleFloatingButtonComponent extends Component {
   render(props: any) {
     return (
-      <Localizer>
-        <div id={'playkit-floating-dismissible-container'}>
-          <div className={'playkit-dismissible-text'}>Back to player</div>
+      <div id={'playkit-floating-dismissible-container'}>
+        <div className={'playkit-dismissible-text'}>Back to player</div>
+        <Localizer>
           <a
             role="button"
             ref={el => {
@@ -35,8 +35,8 @@ class DismissibleFloatingButtonComponent extends Component {
             className={'playkit-floating-dismissible playkit-icon playkit-icon-close'}>
             <Icon type={IconType.Close} />
           </a>
-        </div>
-      </Localizer>
+        </Localizer>
+      </div>
     );
   }
 }
