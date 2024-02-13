@@ -12,9 +12,10 @@ const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
 const FLOATING_DISMISSIBLE_CONTAINER_ID: string = 'playkit-floating-dismissible-container';
+const DISMISSIBLE_CONTAINER_HEIGHT: number = 32;
 const DEFAULT_FLOATING_CONFIG: FloatingConfigObject = {
   position: 'bottom-right',
-  height: '257',
+  height: '225',
   width: '400',
   marginX: '20',
   marginY: '20',
@@ -36,6 +37,7 @@ class Visibility extends BasePlugin {
   _isInPIP: boolean = false;
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
+  _floatingContainerHeight: string;
 
   /**
    * The default configuration of the plugin.
@@ -106,6 +108,8 @@ class Visibility extends BasePlugin {
     if (this.config.draggable) {
       Utils.Dom.addClassName(this._floatingContainer, FLOATING_DRAGGABLE_CLASS);
     }
+
+    this._floatingContainerHeight = this.config.dismissible ? `${Number(this.config.height) + DISMISSIBLE_CONTAINER_HEIGHT}` : this.config.height;
   }
 
   _handleDismissFloating() {
@@ -131,7 +135,7 @@ class Visibility extends BasePlugin {
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.height + 'px');
+    Utils.Dom.setStyle(this._floatingContainer, 'height', `${this._floatingContainerHeight}px`);
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
     if (this.config.dismissible) {
