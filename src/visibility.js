@@ -14,7 +14,7 @@ const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
 const FLOATING_DISMISSIBLE_CONTAINER_ID: string = 'playkit-floating-dismissible-container';
 const DEFAULT_FLOATING_CONFIG: FloatingConfigObject = {
   position: 'bottom-right',
-  height: '225',
+  height: '257',
   width: '400',
   marginX: '20',
   marginY: '20',
