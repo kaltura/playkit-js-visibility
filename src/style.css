@@ -37,14 +37,42 @@
   cursor: grab;
 }
 
+#playkit-floating-dismissible-container {
+  display: none;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  height: 32px;
+  background: #242424;
+  border-radius: 8px 8px 0 0;
+  .playkit-dismissible-text {
+    color: white;
+    display: flex;
+    width: 100%;
+    margin-left: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: Lato, Helvetica Neue, Segoe UI, sans-serif;
+    cursor: default;
+  }
+  .playkit-icon-close {
+    margin-right: 8px;
+    cursor: pointer;
+    background-position-x: 0;
+  }
+}
+
 .playkit-floating-dismissible {
   display: none;
   height: 24px;
   width: 24px;
 }
 
-.playkit-floating-container.playkit-floating-active .playkit-floating-dismissible {
-  display: inline-block;
+.playkit-floating-container.playkit-floating-active #playkit-floating-dismissible-container {
+  display: flex;
+  .playkit-floating-dismissible {
+    display: flex;
+  }
 }
 .playkit-floating-dismissible.playkit-floating-infullscreen{
   display: none !important;

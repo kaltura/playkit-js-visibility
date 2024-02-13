@@ -15,24 +15,27 @@ class DismissibleFloatingButtonComponent extends Component {
   render(props: any) {
     return (
       <Localizer>
-        <a
-          role="button"
-          ref={el => {
-            if (props.addAccessibleChild) {
-              props.addAccessibleChild(el);
-            }
-          }}
-          tabIndex="0"
-          onClick={() => props.onClose()}
-          onKeyDown={e => {
-            if (e.keyCode === KeyMap.ENTER) {
-              props.onClose();
-            }
-          }}
-          aria-label={<Text id="overlay.close" />}
-          className={'playkit-floating-dismissible playkit-icon playkit-icon-close'}>
-          <Icon type={IconType.Close} />
-        </a>
+        <div id={'playkit-floating-dismissible-container'}>
+          <div className={'playkit-dismissible-text'}>Back to player</div>
+          <a
+            role="button"
+            ref={el => {
+              if (props.addAccessibleChild) {
+                props.addAccessibleChild(el);
+              }
+            }}
+            tabIndex="0"
+            onClick={() => props.onClose()}
+            onKeyDown={e => {
+              if (e.keyCode === KeyMap.ENTER) {
+                props.onClose();
+              }
+            }}
+            aria-label={<Text id="overlay.close" />}
+            className={'playkit-floating-dismissible playkit-icon playkit-icon-close'}>
+            <Icon type={IconType.Close} />
+          </a>
+        </div>
       </Localizer>
     );
   }

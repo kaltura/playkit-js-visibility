@@ -11,6 +11,7 @@ const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
+const FLOATING_DISMISSIBLE_CONTAINER_ID: string = 'playkit-floating-dismissible-container';
 const DEFAULT_FLOATING_CONFIG: FloatingConfigObject = {
   position: 'bottom-right',
   height: '225',
@@ -93,7 +94,7 @@ class Visibility extends BasePlugin {
     this._floatingContainer.className = FLOATING_CONTAINER_CLASS;
 
     Utils.Dom.prependTo(this._floatingPoster, this._appTargetContainer);
-    let kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
+    const kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
     if (this._appTargetContainer && this._floatingContainer) {
       this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
       Utils.Dom.appendChild(this._floatingContainer, kalturaPlayerContainer);
@@ -110,6 +111,7 @@ class Visibility extends BasePlugin {
   _handleDismissFloating() {
     this._dismissed = true;
     this.player.pause();
+    this._floatingPoster.scrollIntoView();
     this._stopFloating();
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
@@ -132,6 +134,10 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.height + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
+    if (this.config.dismissible) {
+      const dismissibleContainerEl = Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+      this._floatingContainer.prepend(dismissibleContainerEl);
+    }
     if (this.config.draggable) {
       this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
         this._startDrag(e, 'mousemove', 'mouseup');
