@@ -30,12 +30,12 @@
   touch-action: none;
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
   overflow: hidden;
 }
 .playkit-floating-container.playkit-floating-active {
   z-index: 9999;
   position: fixed;
+  border-radius: 8px;
 }
 .playkit-floating-container.playkit-floating-active.draggable {
   cursor: grab;
