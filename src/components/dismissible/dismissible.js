@@ -15,7 +15,9 @@ class DismissibleFloatingButtonComponent extends Component {
   render(props: any) {
     return (
       <div id={'playkit-floating-dismissible-container'}>
-        <div className={'playkit-dismissible-text'}>Back to player</div>
+        <Localizer>
+          <div className={'playkit-dismissible-text'}>{<Text id="floating.back_to_video">Back to video</Text>}</div>
+        </Localizer>
         <Localizer>
           <a
             role="button"
