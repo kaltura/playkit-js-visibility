@@ -11,6 +11,8 @@ const FLOATING_ACTIVE_CLASS: string = 'playkit-floating-active';
 const FLOATING_CONTAINER_CLASS: string = 'playkit-floating-container';
 const FLOATING_POSTER_CLASS: string = 'playkit-floating-poster';
 const FLOATING_POSTER_CLASS_SHOW: string = 'playkit-floating-poster-show';
+const FLOATING_DISMISSIBLE_CONTAINER_ID: string = 'playkit-floating-dismissible-container';
+const DISMISSIBLE_CONTAINER_HEIGHT: number = 32;
 const DEFAULT_FLOATING_CONFIG: FloatingConfigObject = {
   position: 'bottom-right',
   height: '225',
@@ -35,6 +37,7 @@ class Visibility extends BasePlugin {
   _isInPIP: boolean = false;
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
+  _floatingContainerHeight: string;
 
   /**
    * The default configuration of the plugin.
@@ -52,8 +55,8 @@ class Visibility extends BasePlugin {
             container: 'TopBarRightControls',
             get: DismissibleFloatingButtonComponent,
             props: {
-              onClose: () => {
-                this._handleDismissFloating();
+              onClose: (shouldScrollToPlayer = false) => {
+                this._handleDismissFloating(shouldScrollToPlayer);
               }
             }
           }
@@ -93,7 +96,7 @@ class Visibility extends BasePlugin {
     this._floatingContainer.className = FLOATING_CONTAINER_CLASS;
 
     Utils.Dom.prependTo(this._floatingPoster, this._appTargetContainer);
-    let kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
+    const kalturaPlayerContainer = Utils.Dom.getElementById(this.player.config.ui.targetId);
     if (this._appTargetContainer && this._floatingContainer) {
       this._appTargetContainer.replaceChild(this._floatingContainer, kalturaPlayerContainer);
       Utils.Dom.appendChild(this._floatingContainer, kalturaPlayerContainer);
@@ -105,11 +108,16 @@ class Visibility extends BasePlugin {
     if (this.config.draggable) {
       Utils.Dom.addClassName(this._floatingContainer, FLOATING_DRAGGABLE_CLASS);
     }
+
+    this._floatingContainerHeight = this.config.dismissible ? `${Number(this.config.height) + DISMISSIBLE_CONTAINER_HEIGHT}` : this.config.height;
   }
 
-  _handleDismissFloating() {
+  _handleDismissFloating(shouldScrollToPlayer: boolean) {
     this._dismissed = true;
     this.player.pause();
+    if (shouldScrollToPlayer) {
+      this._floatingPoster.scrollIntoView();
+    }
     this._stopFloating();
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
@@ -129,9 +137,13 @@ class Visibility extends BasePlugin {
   _startFloating() {
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.setStyle(this._floatingContainer, 'height', this.config.height + 'px');
+    Utils.Dom.setStyle(this._floatingContainer, 'height', `${this._floatingContainerHeight}px`);
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
+    if (this.config.dismissible) {
+      const dismissibleContainerEl = Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+      this._floatingContainer.prepend(dismissibleContainerEl);
+    }
     if (this.config.draggable) {
       this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
         this._startDrag(e, 'mousemove', 'mouseup');

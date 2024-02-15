@@ -51,7 +51,7 @@ Finally, add the bundle as a script tag in your page, and initialize the player
     var config = {
      ...
      plugins: {
-       visibility: {
+       floating: {
        }
      }
      ...
