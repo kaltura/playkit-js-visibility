@@ -55,8 +55,8 @@ class Visibility extends BasePlugin {
             container: 'TopBarRightControls',
             get: DismissibleFloatingButtonComponent,
             props: {
-              onClose: () => {
-                this._handleDismissFloating();
+              onClose: (shouldScrollToPlayer = false) => {
+                this._handleDismissFloating(shouldScrollToPlayer);
               }
             }
           }
@@ -112,10 +112,12 @@ class Visibility extends BasePlugin {
     this._floatingContainerHeight = this.config.dismissible ? `${Number(this.config.height) + DISMISSIBLE_CONTAINER_HEIGHT}` : this.config.height;
   }
 
-  _handleDismissFloating() {
+  _handleDismissFloating(shouldScrollToPlayer: boolean) {
     this._dismissed = true;
     this.player.pause();
-    this._floatingPoster.scrollIntoView();
+    if (shouldScrollToPlayer) {
+      this._floatingPoster.scrollIntoView();
+    }
     this._stopFloating();
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }

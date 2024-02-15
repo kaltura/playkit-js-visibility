@@ -57,10 +57,9 @@
     font-size: 14px;
     font-weight: 700;
     font-family: Lato, Helvetica Neue, Segoe UI, sans-serif;
-    cursor: default;
+    cursor: pointer;
   }
   .playkit-icon-close {
-    margin-right: 8px;
     cursor: pointer;
     background-position-x: 0;
   }
@@ -76,6 +75,8 @@
   display: flex;
   .playkit-floating-dismissible {
     display: flex;
+    align-items: center;
+    margin: 4px 8px 4px 0;
   }
 }
 .playkit-floating-dismissible.playkit-floating-infullscreen{
