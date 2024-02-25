@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.2.0 (2024-02-25)
+
+
+### Features
+
+* **FEC-13662:** apply new design for dismissing floating player ([#71](https://github.com/kaltura/playkit-js-visibility/issues/71)) ([ba6bdb7](https://github.com/kaltura/playkit-js-visibility/commit/ba6bdb7))
+
+
+
 ### 2.1.5 (2023-05-17)
 
 
