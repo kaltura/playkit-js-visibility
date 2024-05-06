@@ -1,9 +1,12 @@
 // @flow
-import {core, BasePlugin} from '@playkit-js/kaltura-player-js';
+import {core, BasePlugin, ui} from '@playkit-js/kaltura-player-js';
 const {Utils} = core;
 import './style.css';
 import {DismissibleFloatingButtonComponent} from './components/dismissible/dismissible';
 import {EventType} from './event-type';
+
+const {redux, reducers} = ui;
+const {actions} = reducers.shell;
 
 const DRAG_THROTTLE_MS: number = 30;
 const FLOATING_DRAGGABLE_CLASS: string = 'playkit-floating-draggable';
@@ -38,6 +41,8 @@ class Visibility extends BasePlugin {
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
   _floatingContainerHeight: string;
+  _store: any;
+  _playerSizeBeforeFloating: string;
 
   /**
    * The default configuration of the plugin.
@@ -82,10 +87,15 @@ class Visibility extends BasePlugin {
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
     this._appTargetContainer = Utils.Dom.getElementById(this.player.config.targetId);
+    this._store = redux.useStore();
 
     this._initFloating();
 
     this._addBindings();
+  }
+
+  get _state(): any {
+    return this._store.getState();
   }
 
   _initFloating() {
@@ -132,9 +142,14 @@ class Visibility extends BasePlugin {
       this._stopDrag();
     }
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
+    const playerSizeAfterFloating = this._state.shell.playerSize;
+    if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
+      this._store.dispatch(actions.updatePlayerClientRect(this._floatingContainer.getBoundingClientRect()));
+    }
   }
 
   _startFloating() {
+    this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
     Utils.Dom.setStyle(this._floatingContainer, 'height', `${this._floatingContainerHeight}px`);
@@ -156,8 +171,8 @@ class Visibility extends BasePlugin {
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: true});
   }
 
-  _handleFloatingChange(playerIsVisibile: boolean) {
-    if (playerIsVisibile) {
+  _handleFloatingChange(playerIsVisible: boolean) {
+    if (playerIsVisible) {
       this._stopFloating();
     } else {
       this._startFloating();
@@ -214,6 +229,7 @@ class Visibility extends BasePlugin {
     this._floatingContainer = null;
     this._floatingPoster = null;
     this.eventManager.destroy();
+    this._playerSizeBeforeFloating = '';
   }
 
   _startDrag(e: MouseEvent | TouchEvent, moveEventName: string, endEventName: string) {
