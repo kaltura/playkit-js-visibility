@@ -56,7 +56,7 @@ class Visibility extends BasePlugin {
       ? [
           {
             label: 'dismissibleFloatingButtonComponent',
-            presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+            presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle', 'Img'],
             container: 'TopBarRightControls',
             get: DismissibleFloatingButtonComponent,
             props: {
@@ -157,7 +157,7 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
     if (this.config.dismissible) {
       const dismissibleContainerEl = Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
-      this._floatingContainer.prepend(dismissibleContainerEl);
+      dismissibleContainerEl && this._floatingContainer.prepend(dismissibleContainerEl);
     }
     if (this.config.draggable) {
       this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
