@@ -40,7 +40,6 @@ class Visibility extends BasePlugin {
   _isInPIP: boolean = false;
   _currMousePos: {x: number, y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
-  _floatingContainerHeight: string;
   _store: any;
   _playerSizeBeforeFloating: string;
 
@@ -165,7 +164,9 @@ class Visibility extends BasePlugin {
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
     if (this.config.dismissible) {
       const dismissibleContainerEl = this._getDismissibleContainerEl();
-      dismissibleContainerEl && this._floatingContainer.prepend(dismissibleContainerEl);
+      if (dismissibleContainerEl) {
+        this._floatingContainer.prepend(dismissibleContainerEl);
+      }
     }
     if (this.config.draggable) {
       this.eventManager.listen(this._floatingContainer, 'mousedown', e => {
