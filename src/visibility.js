@@ -118,8 +118,16 @@ class Visibility extends BasePlugin {
     if (this.config.draggable) {
       Utils.Dom.addClassName(this._floatingContainer, FLOATING_DRAGGABLE_CLASS);
     }
+  }
 
-    this._floatingContainerHeight = this.config.dismissible ? `${Number(this.config.height) + DISMISSIBLE_CONTAINER_HEIGHT}` : this.config.height;
+  _getDismissibleContainerEl(): HTMLElement {
+    return Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+  }
+
+  _getFloatingContainerHeight(): string {
+    return this.config.dismissible && this._getDismissibleContainerEl()
+      ? `${Number(this.config.height) + DISMISSIBLE_CONTAINER_HEIGHT}`
+      : this.config.height;
   }
 
   _handleDismissFloating(shouldScrollToPlayer: boolean) {
@@ -152,11 +160,11 @@ class Visibility extends BasePlugin {
     this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.setStyle(this._floatingContainer, 'height', `${this._floatingContainerHeight}px`);
+    Utils.Dom.setStyle(this._floatingContainer, 'height', `${this._getFloatingContainerHeight()}px`);
     Utils.Dom.setStyle(this._floatingContainer, 'width', this.config.width + 'px');
     Utils.Dom.setStyle(this._floatingContainer, 'margin', `${this.config.marginY}px ${this.config.marginX}px`);
     if (this.config.dismissible) {
-      const dismissibleContainerEl = Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+      const dismissibleContainerEl = this._getDismissibleContainerEl();
       dismissibleContainerEl && this._floatingContainer.prepend(dismissibleContainerEl);
     }
     if (this.config.draggable) {
