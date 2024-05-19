@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 2.2.2 (2024-05-19)
+
+
+### Bug Fixes
+
+* **FEC-13893:** back to video header is missing for image preset ([#73](https://github.com/kaltura/playkit-js-visibility/issues/73)) ([bbd663d](https://github.com/kaltura/playkit-js-visibility/commit/bbd663d))
+
+
+
 ### 2.2.1 (2024-04-09)
 
 
