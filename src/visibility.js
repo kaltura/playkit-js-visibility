@@ -42,6 +42,7 @@ class Visibility extends BasePlugin {
   _throttleWait: boolean = false;
   _store: any;
   _playerSizeBeforeFloating: string;
+  targetId: string;
 
   /**
    * The default configuration of the plugin.
@@ -140,14 +141,20 @@ class Visibility extends BasePlugin {
   }
 
   _stopFloating() {
-    Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.removeAttribute(this._floatingContainer, 'style');
-    if (this.config.draggable) {
-      this.eventManager.unlisten(this._floatingContainer, 'mousedown');
-      this.eventManager.unlisten(this._floatingContainer, 'touchstart');
-      this._stopDrag();
-    }
+    const floatingPosterElements = document.querySelectorAll(`.${FLOATING_POSTER_CLASS}`);
+    const floatingContainerElements = document.querySelectorAll(`.${FLOATING_CONTAINER_CLASS}`);
+    floatingPosterElements.forEach(floatingPosterElement => {
+      Utils.Dom.removeClassName(floatingPosterElement, FLOATING_POSTER_CLASS_SHOW);
+    });
+    floatingContainerElements.forEach(floatingContainerElement => {
+      Utils.Dom.removeClassName(floatingContainerElement, FLOATING_ACTIVE_CLASS);
+      Utils.Dom.removeAttribute(floatingContainerElement, 'style');
+      if (this.config.draggable) {
+        this.eventManager.unlisten(floatingContainerElement, 'mousedown');
+        this.eventManager.unlisten(floatingContainerElement, 'touchstart');
+        this._stopDrag();
+      }
+    });
     this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
     const playerSizeAfterFloating = this._state.shell.playerSize;
     if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
@@ -156,6 +163,7 @@ class Visibility extends BasePlugin {
   }
 
   _startFloating() {
+    this.targetId = this.player.config.targetId;
     this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
