@@ -42,7 +42,6 @@ class Visibility extends BasePlugin {
   _throttleWait: boolean = false;
   _store: any;
   _playerSizeBeforeFloating: string;
-  targetId: string;
 
   /**
    * The default configuration of the plugin.
@@ -163,7 +162,6 @@ class Visibility extends BasePlugin {
   }
 
   _startFloating() {
-    this.targetId = this.player.config.targetId;
     this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
