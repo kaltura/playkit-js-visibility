@@ -120,7 +120,8 @@ class Visibility extends BasePlugin {
   }
 
   _getDismissibleContainerEl(): HTMLElement {
-    return Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+    const playerContainer = Utils.Dom.getElementById(this.player.config.targetId);
+    return playerContainer.querySelector(`#${FLOATING_DISMISSIBLE_CONTAINER_ID}`);
   }
 
   _getFloatingContainerHeight(): string {
@@ -155,7 +156,29 @@ class Visibility extends BasePlugin {
     }
   }
 
+  _stopFloatingOnOtherPlayers() {
+    const floatingContainers = document.getElementsByClassName(FLOATING_CONTAINER_CLASS);
+    const floatingPosters = document.getElementsByClassName(FLOATING_POSTER_CLASS);
+    Array.from(floatingContainers).forEach(element => {
+      if (element !== this._floatingContainer) {
+        Utils.Dom.removeClassName(element, FLOATING_ACTIVE_CLASS);
+        Utils.Dom.removeAttribute(element, 'style');
+        if (this.config.draggable) {
+          this.eventManager.unlisten(element, 'mousedown');
+          this.eventManager.unlisten(element, 'touchstart');
+          this._stopDrag();
+        }
+      }
+    });
+    Array.from(floatingPosters).forEach(element => {
+      if (element !== this._floatingPoster) {
+        Utils.Dom.removeClassName(element, FLOATING_POSTER_CLASS_SHOW);
+      }
+    });
+  }
+
   _startFloating() {
+    this._stopFloatingOnOtherPlayers();
     this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
