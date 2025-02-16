@@ -120,7 +120,8 @@ class Visibility extends BasePlugin {
   }
 
   _getDismissibleContainerEl(): HTMLElement {
-    return Utils.Dom.getElementById(FLOATING_DISMISSIBLE_CONTAINER_ID);
+    const playerContainer = Utils.Dom.getElementById(this.player.config.targetId);
+    return playerContainer.querySelector(`#${FLOATING_DISMISSIBLE_CONTAINER_ID}`);
   }
 
   _getFloatingContainerHeight(): string {
@@ -139,23 +140,45 @@ class Visibility extends BasePlugin {
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
 
-  _stopFloating() {
-    Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.removeAttribute(this._floatingContainer, 'style');
+  _stopFloating(floatingPoster = this._floatingPoster, floatingContainer = this._floatingContainer) {
+    Utils.Dom.removeClassName(floatingPoster, FLOATING_POSTER_CLASS_SHOW);
+    Utils.Dom.removeClassName(floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.removeAttribute(floatingContainer, 'style');
+
     if (this.config.draggable) {
-      this.eventManager.unlisten(this._floatingContainer, 'mousedown');
-      this.eventManager.unlisten(this._floatingContainer, 'touchstart');
+      this.eventManager.unlisten(floatingContainer, 'mousedown');
+      this.eventManager.unlisten(floatingContainer, 'touchstart');
       this._stopDrag();
     }
-    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
-    const playerSizeAfterFloating = this._state.shell.playerSize;
-    if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
-      this._store.dispatch(actions.updatePlayerClientRect(this._floatingContainer.getBoundingClientRect()));
+
+    if (floatingContainer === this._floatingContainer) {
+      this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
+      const playerSizeAfterFloating = this._state.shell.playerSize;
+      if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
+        this._store.dispatch(actions.updatePlayerClientRect(floatingContainer.getBoundingClientRect()));
+      }
     }
   }
 
+  _stopFloatingOnOtherPlayers() {
+    const floatingContainers = document.getElementsByClassName(FLOATING_CONTAINER_CLASS);
+    const floatingPosters = document.getElementsByClassName(FLOATING_POSTER_CLASS);
+
+    Array.from(floatingContainers).forEach(container => {
+      if (container !== this._floatingContainer) {
+        this._stopFloating(null, container);
+      }
+    });
+
+    Array.from(floatingPosters).forEach(poster => {
+      if (poster !== this._floatingPoster) {
+        this._stopFloating(poster, null);
+      }
+    });
+  }
+
   _startFloating() {
+    this._stopFloatingOnOtherPlayers();
     this._playerSizeBeforeFloating = this._state.shell.playerSize;
     Utils.Dom.addClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
     Utils.Dom.addClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
