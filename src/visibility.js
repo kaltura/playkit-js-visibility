@@ -140,39 +140,34 @@ class Visibility extends BasePlugin {
     this.dispatchEvent(EventType.FLOATING_PLAYER_DISMISSED);
   }
 
-  _stopFloating() {
-    Utils.Dom.removeClassName(this._floatingPoster, FLOATING_POSTER_CLASS_SHOW);
-    Utils.Dom.removeClassName(this._floatingContainer, FLOATING_ACTIVE_CLASS);
-    Utils.Dom.removeAttribute(this._floatingContainer, 'style');
+  _stopFloating(floatingPoster = this._floatingPoster, floatingContainer = this._floatingContainer) {
+    Utils.Dom.removeClassName(floatingPoster, FLOATING_POSTER_CLASS_SHOW);
+    Utils.Dom.removeClassName(floatingContainer, FLOATING_ACTIVE_CLASS);
+    Utils.Dom.removeAttribute(floatingContainer, 'style');
+
     if (this.config.draggable) {
-      this.eventManager.unlisten(this._floatingContainer, 'mousedown');
-      this.eventManager.unlisten(this._floatingContainer, 'touchstart');
+      this.eventManager.unlisten(floatingContainer, 'mousedown');
+      this.eventManager.unlisten(floatingContainer, 'touchstart');
       this._stopDrag();
     }
-    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
-    const playerSizeAfterFloating = this._state.shell.playerSize;
-    if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
-      this._store.dispatch(actions.updatePlayerClientRect(this._floatingContainer.getBoundingClientRect()));
+
+    if (floatingContainer === this._floatingContainer) {
+      const playerSizeAfterFloating = this._state.shell.playerSize;
+      if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
+        this._store.dispatch(actions.updatePlayerClientRect(floatingContainer.getBoundingClientRect()));
+      }
     }
+
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
   }
 
   _stopFloatingOnOtherPlayers() {
     const floatingContainers = document.getElementsByClassName(FLOATING_CONTAINER_CLASS);
     const floatingPosters = document.getElementsByClassName(FLOATING_POSTER_CLASS);
-    Array.from(floatingContainers).forEach(element => {
-      if (element !== this._floatingContainer) {
-        Utils.Dom.removeClassName(element, FLOATING_ACTIVE_CLASS);
-        Utils.Dom.removeAttribute(element, 'style');
-        if (this.config.draggable) {
-          this.eventManager.unlisten(element, 'mousedown');
-          this.eventManager.unlisten(element, 'touchstart');
-          this._stopDrag();
-        }
-      }
-    });
-    Array.from(floatingPosters).forEach(element => {
-      if (element !== this._floatingPoster) {
-        Utils.Dom.removeClassName(element, FLOATING_POSTER_CLASS_SHOW);
+
+    Array.from(floatingContainers).forEach((container, index) => {
+      if (container !== this._floatingContainer) {
+        this._stopFloating(floatingPosters[index], container);
       }
     });
   }
