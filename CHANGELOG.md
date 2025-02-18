@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.3.0 (2025-01-23)
+
+
+### Features
+
+* **FEC-14239:** Rename Catalan locale from ca to ca_es ([#77](https://github.com/kaltura/playkit-js-visibility/issues/77)) ([34532b0](https://github.com/kaltura/playkit-js-visibility/commit/34532b0))
+
+
+
 ### 2.2.2 (2024-05-19)
 
 
