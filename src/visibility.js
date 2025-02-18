@@ -152,27 +152,22 @@ class Visibility extends BasePlugin {
     }
 
     if (floatingContainer === this._floatingContainer) {
-      this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
       const playerSizeAfterFloating = this._state.shell.playerSize;
       if (this._playerSizeBeforeFloating !== playerSizeAfterFloating) {
         this._store.dispatch(actions.updatePlayerClientRect(floatingContainer.getBoundingClientRect()));
       }
     }
+
+    this.dispatchEvent(EventType.FLOATING_PLAYER_STATE_CHANGED, {active: false});
   }
 
   _stopFloatingOnOtherPlayers() {
     const floatingContainers = document.getElementsByClassName(FLOATING_CONTAINER_CLASS);
     const floatingPosters = document.getElementsByClassName(FLOATING_POSTER_CLASS);
 
-    Array.from(floatingContainers).forEach(container => {
+    Array.from(floatingContainers).forEach((container, index) => {
       if (container !== this._floatingContainer) {
-        this._stopFloating(null, container);
-      }
-    });
-
-    Array.from(floatingPosters).forEach(poster => {
-      if (poster !== this._floatingPoster) {
-        this._stopFloating(poster, null);
+        this._stopFloating(floatingPosters[index], container);
       }
     });
   }
