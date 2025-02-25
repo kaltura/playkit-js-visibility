@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/playkit-js-visibility",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "main": "dist/playkit-visibility.js",
   "scripts": {
     "clean": "rm -rf ./dist",
