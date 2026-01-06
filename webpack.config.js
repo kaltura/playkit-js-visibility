@@ -3,11 +3,18 @@
 const webpack = require('webpack');
 const path = require('path');
 const packageData = require('./package.json');
+const {insertStylesWithNonce} = require('@playkit-js/webpack-common');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const plugins = [
   new webpack.DefinePlugin({
     __VERSION__: JSON.stringify(packageData.version),
     __NAME__: JSON.stringify(packageData.name)
+  }),
+  new ESLintPlugin({
+    extensions: ['js'],
+    exclude: 'node_modules'
   })
 ];
 
@@ -24,6 +31,18 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: plugins,
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          output: {
+            comments: false
+          }
+        },
+        extractComments: false
+      })
+    ]
+  },
   module: {
     rules: [
       {
@@ -36,17 +55,28 @@ module.exports = {
         exclude: [/node_modules/]
       },
       {
-        test: /\.js$/,
-        exclude: [/node_modules/],
-        enforce: 'pre',
+        test: /\.scss$/,
         use: [
           {
-            loader: 'eslint-loader',
+            loader: 'style-loader',
             options: {
-              rules: {
-                semi: 0
+              attributes: {
+                id: `${packageData.name}`
+              },
+              insert: insertStylesWithNonce
+            }
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+                exportLocalsConvention: 'camelCase'
               }
             }
+          },
+          {
+            loader: 'sass-loader'
           }
         ]
       },
@@ -64,9 +94,15 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: __dirname + '/src'
+    static: {
+      directory: path.join(__dirname, 'demo')
+    },
+    client: {
+      progress: true
+    }
   },
   resolve: {
+    extensions: ['.js'],
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Visibility Plugin Demo Page" />
+    <title>Visibility Plugin</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script src="https://unpkg.com/@playkit-js/kaltura-player-js@canary/dist/kaltura-ovp-player.js"></script>
+    <script src="../playkit-visibility.js"></script>
+  </head>
+  <body>
+    <div id="player-placeholder" style="width: 640px; height: 360px"></div>
+    <script>
+      const config = {
+        log: {
+          level: 'DEBUG'
+        },
+        targetId: 'player-placeholder',
+        provider: {
+          env: {
+            cdnUrl: 'https://cfvod.nvq2.ovp.kaltura.com',
+            serviceUrl: 'https://api.nvq2.ovp.kaltura.com/api_v3'
+          },
+          partnerId: 242
+        },
+        plugins: {
+          floating: {}
+        }
+      };
+
+      const player = KalturaPlayer.setup(config);
+      player.loadMedia({entryId: '0_6ok6gcii'});
+    </script>
+  </body>
+</html>

@@ -27,7 +27,6 @@
 .playkit-floating-container {
   height: 100%;
   width: 100%;
-  touch-action: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
