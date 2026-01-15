@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 2.3.3 (2026-01-15)
+
+
+### Bug Fixes
+
+* **FEC-14845:** DS - Tablet - Media Page - Vod and image entry page not scrollable in landscape mode ([#85](https://github.com/kaltura/playkit-js-visibility/issues/85)) ([ee39e3d](https://github.com/kaltura/playkit-js-visibility/commit/ee39e3d))
+
+
+
 ### 2.3.2 (2025-03-06)
 
 
