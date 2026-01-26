@@ -84,7 +84,13 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: 'style-loader',
+            options: {
+              attributes: {
+                id: `${packageData.name}`
+              },
+              insert: insertStylesWithNonce
+            }
           },
           {
             loader: 'css-loader'
