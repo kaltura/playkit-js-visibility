@@ -1,0 +1,178 @@
+{
+  "repositoryName": "playkit-js-visibility",
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-04",
+
+  "coreResponsibility": {
+    "summary": "A PlayKit JS plugin that provides floating/picture-in-picture player functionality when the main player scrolls out of viewport, enabling continuous video engagement while users browse page content.",
+    "type": "plugin",
+    "category": "UI/UX Enhancement"
+  },
+
+  "domainAndLogicOwnership": {
+    "featureOwnership": [
+      "Floating player mode (viewport visibility detection)",
+      "Auto-float when player scrolls out of view",
+      "Configurable floating player positioning (top-left, top-right, bottom-left, bottom-right)",
+      "Draggable floating player window",
+      "Dismissible floating player (close button)",
+      "Back to video navigation",
+      "Picture-in-Picture (PiP) state coordination",
+      "Floating player poster display",
+      "Multi-player coordination (stop floating on other players)"
+    ],
+    "dataHandling": [
+      "Player visibility state (in-viewport vs out-of-viewport)",
+      "Floating player active/inactive state",
+      "Floating player position and dimensions",
+      "Drag position tracking (mouse/touch coordinates)",
+      "Dismissal state management",
+      "PiP mode state synchronization",
+      "Player poster image URL for floating display"
+    ],
+    "stateManagement": {
+      "floatingStates": ["active", "inactive", "dismissed"],
+      "visibilityTypes": ["VIEWPORT"],
+      "events": ["FLOATING_PLAYER_STATE_CHANGED", "FLOATING_PLAYER_DISMISSED"]
+    }
+  },
+
+  "integrationPoints": {
+    "upstream": [
+      {
+        "name": "@playkit-js/kaltura-player-js",
+        "relationship": "peer dependency",
+        "description": "Core player framework providing BasePlugin, UI components, Redux store, and event system"
+      }
+    ],
+    "downstream": [
+      {
+        "name": "Kaltura Player V7 web applications",
+        "relationship": "consumer",
+        "description": "Any web application embedding Kaltura Player can enable this plugin for floating player functionality"
+      }
+    ],
+    "externalAPIs": [
+      {
+        "name": "IntersectionObserver API (via viewabilityManager)",
+        "type": "Browser API",
+        "usage": "Detecting when player container enters/exits viewport"
+      }
+    ],
+    "playerIntegration": {
+      "pluginRegistration": "Registered as 'floating' plugin via registerPlugin()",
+      "uiComponents": ["DismissibleFloatingButtonComponent"],
+      "presets": ["Playback", "Live", "Error", "Ads", "Idle", "Img"],
+      "playerEvents": [
+        "ENTER_PICTURE_IN_PICTURE",
+        "LEAVE_PICTURE_IN_PICTURE",
+        "PLAYBACK_START",
+        "ENTER_FULLSCREEN",
+        "EXIT_FULLSCREEN"
+      ]
+    }
+  },
+
+  "technicalStack": {
+    "primaryLanguages": ["JavaScript (ES6+)", "Flow (static typing)"],
+    "frameworks": ["Preact (JSX components)", "Redux (state management)"],
+    "buildTools": ["Webpack", "Babel"],
+    "testingFrameworks": ["Karma", "Mocha", "Chai", "Sinon"],
+    "styling": ["CSS", "SCSS"],
+    "entryPoints": {
+      "main": "src/index.js",
+      "coreLogic": "src/visibility.js",
+      "events": "src/event-type.js",
+      "uiComponents": "src/components/dismissible/dismissible.js",
+      "typeDefinitions": "flow-typed/types/visibility-config.js",
+      "bundleOutput": "dist/playkit-visibility.js"
+    },
+    "configuration": {
+      "defaultConfig": {
+        "position": "bottom-right",
+        "height": 225,
+        "width": 400,
+        "marginX": 20,
+        "marginY": 20,
+        "dismissible": true,
+        "draggable": true
+      },
+      "configOptions": [
+        "position",
+        "height",
+        "width",
+        "marginX",
+        "marginY",
+        "dismissible",
+        "draggable"
+      ]
+    }
+  },
+
+  "triageKeywords": {
+    "primaryKeywords": [
+      "floating player",
+      "floating",
+      "visibility",
+      "viewport",
+      "scroll out of view",
+      "picture-in-picture",
+      "PiP",
+      "mini player",
+      "sticky player",
+      "dismissible",
+      "draggable player",
+      "playkit-floating",
+      "back to video",
+      "player disappears when scrolling"
+    ],
+    "errorPatterns": [
+      "floatingplayerstatechanged",
+      "floatingplayerdismissed",
+      "playkit-floating-active",
+      "playkit-floating-container",
+      "playkit-floating-poster",
+      "playkit-floating-dismissible",
+      "viewabilityManager",
+      "FLOATING_PLAYER_STATE_CHANGED",
+      "FLOATING_PLAYER_DISMISSED"
+    ],
+    "cssClassPatterns": [
+      "playkit-floating-*",
+      "playkit-dismissible-*"
+    ],
+    "configKeywords": [
+      "floating config",
+      "floating position",
+      "floating height",
+      "floating width",
+      "floating margin"
+    ],
+    "relatedUserStories": [
+      "player floats when I scroll down",
+      "mini player appears in corner",
+      "video keeps playing when scrolled away",
+      "close floating player button",
+      "drag floating player",
+      "floating player position",
+      "floating player size"
+    ]
+  },
+
+  "boundaryConditions": {
+    "notResponsibleFor": [
+      "Core playback engine logic",
+      "DRM/content protection",
+      "Ad insertion (handled by IMA/DAI plugins)",
+      "Analytics tracking",
+      "Chromecast/AirPlay casting",
+      "Closed captions/subtitles",
+      "Quality selection/ABR",
+      "Playlist management"
+    ],
+    "prerequisites": [
+      "Kaltura Player JS must be loaded first",
+      "Plugin must be registered via player config plugins.floating"
+    ]
+  }
+}
